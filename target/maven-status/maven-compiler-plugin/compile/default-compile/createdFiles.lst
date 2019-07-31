@@ -1,0 +1,17 @@
+net\skycade\skycadecustomitems\customitems\CustomItemManager.class
+net\skycade\skycadecustomitems\customitems\items\ExperienceBoosterItem.class
+net\skycade\skycadecustomitems\customitems\items\MendingScarabItem.class
+net\skycade\skycadecustomitems\SkycadeCustomItemsPlugin.class
+net\skycade\skycadecustomitems\customitems\items\LegendaryVialItem.class
+net\skycade\skycadecustomitems\customitems\items\CustomItem.class
+net\skycade\skycadecustomitems\customitems\items\TeleportationOrbItem.class
+net\skycade\skycadecustomitems\customitems\items\ChargerItem.class
+net\skycade\skycadecustomitems\customitems\items\ProtectionOrbItem.class
+net\skycade\skycadecustomitems\customitems\items\pouch\PouchData$1.class
+net\skycade\skycadecustomitems\customitems\commands\CustomItemCommand.class
+net\skycade\skycadecustomitems\customitems\items\PouchItem.class
+net\skycade\skycadecustomitems\customitems\items\pouch\PouchInventoryHolder.class
+net\skycade\skycadecustomitems\customitems\items\pouch\PouchData.class
+net\skycade\skycadecustomitems\customitems\items\RenameTagItem.class
+net\skycade\skycadecustomitems\customitems\items\PouchItem$ShopListener.class
+net\skycade\skycadecustomitems\customitems\items\PouchUpgraderItem.class
