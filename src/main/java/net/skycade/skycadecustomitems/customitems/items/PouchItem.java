@@ -126,6 +126,8 @@ public class PouchItem extends CustomItem {
         PouchData.loadData(event.getCursor());
     }
 
+    //todo Bring this listener from prisons into here, pouches only work on prisons rn because its in prisons only
+
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreakFullInventory(BlockBreakFullInventoryEvent event) {
         List<ItemStack> remaining = event.getRemaining();

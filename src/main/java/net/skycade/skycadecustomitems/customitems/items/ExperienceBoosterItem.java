@@ -28,15 +28,20 @@ import java.util.*;
 import static net.skycade.prisons.util.SpigotUtil.wrap;
 
 public class ExperienceBoosterItem extends CustomItem implements Listener {
-    private String itemTable = SkycadeEnchantsPlugin.getInstance().getConfig().getString("database.prisons-items-table");
-
     public ExperienceBoosterItem() {
         super("EXPERIENCE_BOOSTER", ChatColor.BLUE + "Experience Booster", Material.EYE_OF_ENDER);
     }
 
+    private String itemTable;
+    private Map<Material, Integer> itemMap;
     private Map<UUID, Long> activeExpBoost = new HashMap<>();
-    private Map<Material, Integer> itemMap = getAllItems();
     private List<UUID> canGainXP = new ArrayList<>();
+
+    @Override
+    public void postLoad() {
+        itemTable = SkycadeEnchantsPlugin.getInstance().getConfig().getString("database.prisons-items-table");
+        itemMap = getAllItems();
+    }
 
     @Override
     public void giveItem(Player p, int amount) {

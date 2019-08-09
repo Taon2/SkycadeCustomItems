@@ -28,6 +28,10 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
     public TeleportationOrbItem() {
         super("TELEPORTATION_ORB", ChatColor.DARK_AQUA + "Teleportation Orb", Material.SLIME_BALL);
         CoreSettings.getInstance().registerSetting(TELEPORTATION_ORB_USES);
+    }
+
+    @Override
+    public void postLoad() {
         Prison.get().getEventBus().register(this);
     }
 
