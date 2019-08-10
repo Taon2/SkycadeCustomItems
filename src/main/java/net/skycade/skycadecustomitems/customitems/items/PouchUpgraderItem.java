@@ -1,10 +1,10 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
+import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import net.skycade.skycadecustomitems.customitems.items.pouch.PouchData;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,7 +35,10 @@ public class PouchUpgraderItem extends CustomItem {
             meta.setLore(getLore());
             is.setItemMeta(meta);
 
-            setMaxStackSize(is, CraftItemStack.asNMSCopy(is), 1);
+            if (SkycadeCustomItemsPlugin.v18)
+                setMaxStackSize(is, org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(is), 1);
+            else
+                setMaxStackSize(is, org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(is), 1);
 
             InventoryUtil.giveItems(p, is);
         }

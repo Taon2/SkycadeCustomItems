@@ -9,8 +9,6 @@ import org.bukkit.plugin.Plugin;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin.v18;
-
 public class CustomItemManager {
 
     private final Plugin plugin;
@@ -33,14 +31,10 @@ public class CustomItemManager {
         registerCustomItem(new ProtectionOrbItem());
         registerCustomItem(new PouchItem());
         registerCustomItem(new PouchUpgraderItem());
-        //todo make work on 1.12 as well
-        if (v18){
-            registerCustomItem(new MendingScarabItem());
-        }
+        registerCustomItem(new MendingScarabItem());
     }
 
     private void registerCustomItem(CustomItem item) {
-
         String node = "disabled-items." + item.getHandle();
         if (!SkycadeCustomItemsPlugin.getInstance().getConfig().contains(node)) {
             //If node is not in the config, automatically load.

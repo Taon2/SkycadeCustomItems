@@ -4,9 +4,9 @@ import com.google.common.eventbus.Subscribe;
 import net.skycade.SkycadeCore.ConfigEntry;
 import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
+import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -45,7 +45,11 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
             meta.setLore(getLore());
             is.setItemMeta(meta);
 
-            setMaxStackSize(is, CraftItemStack.asNMSCopy(is), 1);
+            if (SkycadeCustomItemsPlugin.v18)
+                setMaxStackSize(is, org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(is), 1);
+            else
+                setMaxStackSize(is, org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(is), 1);
+
             setNum(is, getLore(), "Uses", TELEPORTATION_ORB_USES.getValue());
 
             InventoryUtil.giveItems(p, is);

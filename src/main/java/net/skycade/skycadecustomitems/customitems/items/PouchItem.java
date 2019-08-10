@@ -57,7 +57,6 @@ public class PouchItem extends CustomItem {
             meta.setLore(getLore());
             is.setItemMeta(meta);
 
-            //setMaxStackSize(is, CraftItemStack.asNMSCopy(is), 1);
             PouchData data = new PouchData(PouchData.getPouchId(is));
             data.setLevel(1);
             setNum(is, getLore(), "Tier", data.getLevel());

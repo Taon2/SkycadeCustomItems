@@ -1,9 +1,7 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
-import net.minecraft.server.v1_8_R3.Item;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -136,11 +134,21 @@ public abstract class CustomItem implements Listener {
 
     void setMaxStackSize(ItemStack original, net.minecraft.server.v1_8_R3.ItemStack nmsItem, int amount){
         try {
-            Field field = Item.class.getDeclaredField("maxStackSize");
+            Field field = net.minecraft.server.v1_8_R3.Item.class.getDeclaredField("maxStackSize");
             field.setAccessible(true);
             field.setInt(nmsItem.getItem(), amount);
         } catch (Exception ignored) {}
 
-        original.setItemMeta(CraftItemStack.getItemMeta(nmsItem));
+        original.setItemMeta(org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.getItemMeta(nmsItem));
+    }
+
+    void setMaxStackSize(ItemStack original, net.minecraft.server.v1_12_R1.ItemStack nmsItem, int amount){
+        try {
+            Field field = net.minecraft.server.v1_12_R1.Item.class.getDeclaredField("maxStackSize");
+            field.setAccessible(true);
+            field.setInt(nmsItem.getItem(), amount);
+        } catch (Exception ignored) {}
+
+        original.setItemMeta(org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.getItemMeta(nmsItem));
     }
 }

@@ -3,9 +3,9 @@ package net.skycade.skycadecustomitems.customitems.items;
 import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.SkycadeEnchants.SkycadeEnchantsPlugin;
+import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -58,8 +58,13 @@ public class ExperienceBoosterItem extends CustomItem implements Listener {
             meta.setLore(getLore());
             is.setItemMeta(meta);
 
-            setMaxStackSize(is, CraftItemStack.asNMSCopy(is), 1);
+            if (SkycadeCustomItemsPlugin.v18)
+                setMaxStackSize(is, org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(is), 1);
+            else
+                setMaxStackSize(is, org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(is), 1);
+
             setNum(is, getLore(), "Duration", duration);
+
 
             InventoryUtil.giveItems(p, is);
         }
