@@ -1,9 +1,7 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
 import net.skycade.SkycadeCore.utility.ItemBuilder;
-import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.SkycadeEnchants.enchant.common.EnchantmentManager;
-import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,13 +15,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static net.skycade.prisons.util.Messages.REPAIRED;
 
-public class MendingScarabItem extends CustomItem {
+public abstract class MendingScarabItem extends CustomItem {
 
-    private static ItemStack mendingScarab;
+    protected static ItemStack mendingScarab;
 
     static {
         mendingScarab = new ItemBuilder(Material.EMERALD)
@@ -39,35 +36,6 @@ public class MendingScarabItem extends CustomItem {
     public MendingScarabItem() {
         super("MENDING_SCARAB", ChatColor.GREEN + "Mending Scarab", Material.EMERALD);
         Bukkit.getLogger().info("running");
-    }
-
-    @Override
-    public void giveItem(Player p, int amount) {
-        for (int i = amount; i > 0; i--) {
-
-            ItemStack item = mendingScarab.clone();
-
-            if (SkycadeCustomItemsPlugin.v18) {
-                setMaxStackSize(item, org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(item), 1);
-                net.minecraft.server.v1_8_R3.ItemStack itemStack = org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(item);
-                net.minecraft.server.v1_8_R3.NBTTagCompound nbt = itemStack.getTag();
-                nbt.set("mending", new net.minecraft.server.v1_8_R3.NBTTagInt(ThreadLocalRandom.current().nextInt()));
-                itemStack.setTag(nbt);
-
-                InventoryUtil.giveItems(p, org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asBukkitCopy(itemStack));
-            }
-            else {
-                setMaxStackSize(item, org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(item), 1);
-                net.minecraft.server.v1_12_R1.ItemStack itemStack = org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(item);
-                net.minecraft.server.v1_12_R1.NBTTagCompound nbt = itemStack.getTag();
-                if (nbt != null) {
-                    nbt.set("mending", new net.minecraft.server.v1_12_R1.NBTTagInt(ThreadLocalRandom.current().nextInt()));
-                }
-                itemStack.setTag(nbt);
-
-                InventoryUtil.giveItems(p, org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asBukkitCopy(itemStack));
-            }
-        }
     }
 
     private boolean matches(ItemStack item) {

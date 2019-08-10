@@ -3,6 +3,8 @@ package net.skycade.skycadecustomitems.customitems;
 import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import net.skycade.skycadecustomitems.customitems.commands.CustomItemCommand;
 import net.skycade.skycadecustomitems.customitems.items.*;
+import net.skycade.skycadecustomitems.customitems.items.nms.MendingScarabItem1_12;
+import net.skycade.skycadecustomitems.customitems.items.nms.MendingScarabItem1_8;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -11,10 +13,10 @@ import java.util.Map;
 
 public class CustomItemManager {
 
-    private final Plugin plugin;
+    private final SkycadeCustomItemsPlugin plugin;
     private static final Map<String, CustomItem> customItems = new LinkedHashMap<>();
 
-    public CustomItemManager (Plugin plugin) {
+    public CustomItemManager(SkycadeCustomItemsPlugin plugin) {
         this.plugin = plugin;
 
         new CustomItemCommand();
@@ -31,7 +33,11 @@ public class CustomItemManager {
         registerCustomItem(new ProtectionOrbItem());
         registerCustomItem(new PouchItem());
         registerCustomItem(new PouchUpgraderItem());
-        registerCustomItem(new MendingScarabItem());
+        if (SkycadeCustomItemsPlugin.v18) {
+            registerCustomItem(new MendingScarabItem1_8());
+        } else {
+            registerCustomItem(new MendingScarabItem1_12());
+        }
     }
 
     private void registerCustomItem(CustomItem item) {

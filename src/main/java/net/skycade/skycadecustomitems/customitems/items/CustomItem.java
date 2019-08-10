@@ -132,7 +132,7 @@ public abstract class CustomItem implements Listener {
         item.setItemMeta(meta);
     }
 
-    void setMaxStackSize(ItemStack original, net.minecraft.server.v1_8_R3.ItemStack nmsItem, int amount){
+    protected void setMaxStackSize(ItemStack original, net.minecraft.server.v1_8_R3.ItemStack nmsItem, int amount){
         try {
             Field field = net.minecraft.server.v1_8_R3.Item.class.getDeclaredField("maxStackSize");
             field.setAccessible(true);
@@ -142,7 +142,7 @@ public abstract class CustomItem implements Listener {
         original.setItemMeta(org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.getItemMeta(nmsItem));
     }
 
-    void setMaxStackSize(ItemStack original, net.minecraft.server.v1_12_R1.ItemStack nmsItem, int amount){
+    protected void setMaxStackSize(ItemStack original, net.minecraft.server.v1_12_R1.ItemStack nmsItem, int amount){
         try {
             Field field = net.minecraft.server.v1_12_R1.Item.class.getDeclaredField("maxStackSize");
             field.setAccessible(true);

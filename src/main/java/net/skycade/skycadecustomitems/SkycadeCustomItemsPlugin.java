@@ -11,6 +11,7 @@ import java.util.TreeMap;
 public class SkycadeCustomItemsPlugin extends SkycadePlugin {
 
     private static SkycadeCustomItemsPlugin instance;
+
     public static boolean v18;
 
     public SkycadeCustomItemsPlugin() {
@@ -33,7 +34,7 @@ public class SkycadeCustomItemsPlugin extends SkycadePlugin {
         setConfigDefaults(defaults);
         loadDefaultConfig();
 
-        new CustomItemManager(instance);
+        new CustomItemManager(this);
     }
 
     @Override
