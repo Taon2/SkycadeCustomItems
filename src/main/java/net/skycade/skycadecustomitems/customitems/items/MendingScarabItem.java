@@ -2,7 +2,6 @@ package net.skycade.skycadecustomitems.customitems.items;
 
 import net.skycade.SkycadeCore.utility.ItemBuilder;
 import net.skycade.SkycadeEnchants.enchant.common.EnchantmentManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -35,7 +34,6 @@ public abstract class MendingScarabItem extends CustomItem {
 
     public MendingScarabItem() {
         super("MENDING_SCARAB", ChatColor.GREEN + "Mending Scarab", Material.EMERALD);
-        Bukkit.getLogger().info("running");
     }
 
     private boolean matches(ItemStack item) {

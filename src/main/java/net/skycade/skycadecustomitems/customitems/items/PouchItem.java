@@ -215,6 +215,10 @@ public class PouchItem extends CustomItem {
 
         @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
         public void onPreSellTransaction(PreSellTransactionEvent event) {
+            //If pouches are disabled, don't run
+            String node = "disabled-items.POUCH";
+            if (SkycadeCustomItemsPlugin.getInstance().getConfig().getBoolean(node)) return;
+
             Player player = event.getPlayer();
             SkycadeShoppable shoppable = event.getShoppable();
             if (!(shoppable instanceof Item)) return;
