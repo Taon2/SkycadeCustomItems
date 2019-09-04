@@ -6,8 +6,7 @@ import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -69,21 +68,67 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
         event.setCancelled(true);
     }
 
+    private static List<EntityType> disabledTypes;
+
+    static {
+        disabledTypes = Arrays.asList(
+                EntityType.ARROW,
+                //EntityType.SPECTRAL_ARROW,
+                //EntityType.TIPPED_ARROW,
+                EntityType.SPLASH_POTION,
+               // EntityType.LINGERING_POTION,
+               // EntityType.AREA_EFFECT_CLOUD,
+                EntityType.SNOWBALL,
+                EntityType.PLAYER
+        );
+    }
+
     @EventHandler (priority = EventPriority.LOWEST)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (event.getEntity().getType() != EntityType.PLAYER || event.getDamager().getType() != EntityType.PLAYER) return;
+        if (event.getEntity().getType() != EntityType.PLAYER) return;
 
-        //Removes the player from the list if its been more than the allocated amount of time already
-        if (activeOrbs.containsKey(event.getEntity().getUniqueId()) && activeOrbs.get(event.getEntity().getUniqueId()) <= System.currentTimeMillis()) {
-            activeOrbs.remove(event.getEntity().getUniqueId());
-        }
-        if (activeOrbs.containsKey(event.getDamager().getUniqueId()) && activeOrbs.get(event.getDamager().getUniqueId()) <= System.currentTimeMillis()) {
-            activeOrbs.remove(event.getDamager().getUniqueId());
-        }
+        if (disabledTypes.contains(event.getDamager().getType())) {
+            Entity attacker = null;
+            switch (event.getCause()) {
+                case MAGIC:
+                    // Stops all damage potions and stuff
+                    event.setCancelled(true);
+                    break;
+                case ENTITY_ATTACK:
+                    attacker = event.getDamager();
+                    break;
+                case PROJECTILE:
+                    // Only certain projectiles are player originating
+                    if (event.getDamager().getType() == EntityType.ARROW) {
+                        Arrow arrow = (Arrow) event.getDamager();
+                        if (arrow.getShooter() instanceof Player){
+                            attacker = (Entity) arrow.getShooter();
+                        }
+                    } else if (event.getDamager().getType() == EntityType.SNOWBALL) {
+                        Snowball snowball = (Snowball) event.getDamager();
+                        if (snowball.getShooter() instanceof Player){
+                            attacker = (Entity) snowball.getShooter();
+                        }
+                    } else {
+                        return;
+                    }
+                    break;
+            }
 
-        //Stops damage from both parties if one of them has the orb active
-        if (activeOrbs.containsKey(event.getEntity().getUniqueId()) || activeOrbs.containsKey(event.getDamager().getUniqueId())) {
-            event.setCancelled(true);
+            if (attacker != null && attacker.getType() != EntityType.PLAYER) return;
+
+            //Removes the player from the list if its been more than the allocated amount of time already
+            if (activeOrbs.containsKey(event.getEntity().getUniqueId()) && activeOrbs.get(event.getEntity().getUniqueId()) <= System.currentTimeMillis()) {
+                activeOrbs.remove(event.getEntity().getUniqueId());
+            }
+            if (activeOrbs.containsKey(event.getDamager().getUniqueId()) && activeOrbs.get(event.getDamager().getUniqueId()) <= System.currentTimeMillis()) {
+                activeOrbs.remove(event.getDamager().getUniqueId());
+            }
+
+            //Stops damage from both parties if one of them has the orb active
+            if (activeOrbs.containsKey(event.getEntity().getUniqueId()) || activeOrbs.containsKey(event.getDamager().getUniqueId())) {
+                event.setCancelled(true);
+            }
         }
     }
 
