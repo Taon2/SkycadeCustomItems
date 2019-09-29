@@ -2,6 +2,7 @@ package net.skycade.skycadecustomitems.customitems.items;
 
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
+import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -58,8 +59,9 @@ public class RenameTagItem extends CustomItem implements Listener {
         ItemStack clickedItem = event.getCurrentItem();
 
         if (event.getWhoClicked().getType() != EntityType.PLAYER) return;
-        if (hoveredItem == null || hoveredItem.getType() == Material.AIR || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasDisplayName() || !hoveredItem.getItemMeta().getDisplayName().equals(getName())) return;
-        if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
+        if (hoveredItem == null || hoveredItem.getType() == Material.AIR || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasLore() || !hoveredItem.getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
+        if (hoveredItem == null || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasDisplayName() || !hoveredItem.getItemMeta().getDisplayName().equals(getName())) return;
+        if (clickedItem == null || clickedItem.getType() == Material.AIR || (clickedItem.hasItemMeta() && clickedItem.getItemMeta().hasLore() && clickedItem.getItemMeta().getLore().contains(CustomItemManager.MAGIC))) return;
 
         //Removes tag
         event.setCancelled(true);
@@ -76,6 +78,18 @@ public class RenameTagItem extends CustomItem implements Listener {
                 player.updateInventory();
                 return;
             }
+
+            for (Map.Entry<String, CustomItem> entry : CustomItemManager.getAllCustomItems().entrySet()) {
+                CustomItem customItem = entry.getValue();
+                if (v.equalsIgnoreCase(customItem.getName())) {
+                    player.sendMessage(ChatColor.RED + "You cannot name an item that!");
+                    giveItem(player, 1);
+                    player.updateInventory();
+                    return;
+                }
+            }
+
+
             //Renames item if not canceled
             ItemMeta meta = event.getCurrentItem().getItemMeta();
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', v));
@@ -117,7 +131,7 @@ public class RenameTagItem extends CustomItem implements Listener {
 
     private List<String> getLore() {
         return Arrays.asList(
-                "",
+                CustomItemManager.MAGIC,
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Allows you to rename an item with colors.",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Click onto an item to rename it!"

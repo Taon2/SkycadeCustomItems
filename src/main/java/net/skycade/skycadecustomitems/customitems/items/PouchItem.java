@@ -5,6 +5,7 @@ import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.prisons.util.Pair;
 import net.skycade.prisons.util.drop.BlockBreakFullInventoryEvent;
 import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
+import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import net.skycade.skycadecustomitems.customitems.items.pouch.PouchData;
 import net.skycade.skycadecustomitems.customitems.items.pouch.PouchInventoryHolder;
 import net.skycade.skycadeshop.SkycadeShopPlugin;
@@ -282,7 +283,7 @@ public class PouchItem extends CustomItem {
 
     public static List<String> getLore() {
         return Arrays.asList(
-                "",
+                CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Tier: " + ChatColor.WHITE + "%current%",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Stores more loot once your inventory is full!",

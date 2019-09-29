@@ -5,6 +5,7 @@ import net.skycade.SkycadeCore.ConfigEntry;
 import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
+import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -67,7 +68,8 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
         ItemStack item = event.getItem();
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (player == null || !player.isSneaking()) return;
-        if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName() || !item.getItemMeta().getDisplayName().equals(getName())) return;
+        if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasLore() || !item.getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
+        if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName() || !item.getItemMeta().getDisplayName().equals(getName())) return;
 
         if (getCurrentNum(item, "Uses") > 0) {
             for (Mine mine : PrisonMines.getInstance().getMines()) {
@@ -95,7 +97,7 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
 
     public static List<String> getLore() {
         return Arrays.asList(
-                "",
+                CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Uses: " + ChatColor.WHITE + "%current%",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Teleports you to the beginning of the mine you are in!",

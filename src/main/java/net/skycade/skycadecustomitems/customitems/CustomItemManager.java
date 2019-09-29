@@ -16,6 +16,8 @@ public class CustomItemManager {
     private final SkycadeCustomItemsPlugin plugin;
     private static final Map<String, CustomItem> customItems = new LinkedHashMap<>();
 
+    public static final String MAGIC = "\u00A72\u00A73\u00A74\u00A7r";
+
     public CustomItemManager(SkycadeCustomItemsPlugin plugin) {
         this.plugin = plugin;
 

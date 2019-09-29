@@ -2,6 +2,8 @@ package net.skycade.skycadecustomitems;
 
 import net.skycade.SkycadeCore.SkycadePlugin;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
+import net.skycade.skycadecustomitems.customitems.listeners.ProtectionListener;
+import net.skycade.skycadecustomitems.customitems.listeners.ProtectionListener1_12;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -27,6 +29,9 @@ public class SkycadeCustomItemsPlugin extends SkycadePlugin {
         super.onEnable();
 
         v18 = Bukkit.getServer().getClass().getPackage().getName().contains("1_8");
+
+        registerListeners(new ProtectionListener());
+        if (!v18) registerListeners(new ProtectionListener1_12());
 
         Map<String, Object> defaults = new TreeMap<>();
         defaults.put("disabled-items", new YamlConfiguration());

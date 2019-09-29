@@ -5,6 +5,7 @@ import net.skycade.SkycadeEnchants.enchant.common.Enchantment;
 import net.skycade.SkycadeEnchants.enchant.common.EnchantmentManager;
 import net.skycade.prisons.util.EnchantmentTypes;
 import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
+import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -56,7 +57,9 @@ public class LegendaryVialItem extends CustomItem implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() != (Action.RIGHT_CLICK_AIR) && event.getAction() != (Action.RIGHT_CLICK_BLOCK)) return;
         if (event.getPlayer() == null || !event.getPlayer().isSneaking()) return;
+        if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasLore() || !event.getItem().getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName() || !event.getItem().getItemMeta().getDisplayName().equals(getName())) return;
+
         if (getCurrentNum(event.getItem(), "Charges") >= getMaxNum(event.getItem(), "Charges")) {
             Enchantment enchantment = (Enchantment) EnchantmentManager.getInstance().getEnchantmentByName(EnchantmentTypes.getLegendary().get(ThreadLocalRandom.current().nextInt(0, EnchantmentTypes.getLegendary().size())));
             ItemStack book = EnchantmentManager.getInstance().getEnchantedBook(enchantment, enchantment.getMinLevel());
@@ -75,7 +78,7 @@ public class LegendaryVialItem extends CustomItem implements Listener {
 
     public static List<String> getLore() {
         return Arrays.asList(
-                "",
+                CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Charges: " + ChatColor.WHITE + "%current%/%max%",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Awards you with one Legendary enchantment book!",

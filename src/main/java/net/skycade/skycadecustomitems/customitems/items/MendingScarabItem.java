@@ -2,6 +2,7 @@ package net.skycade.skycadecustomitems.customitems.items;
 
 import net.skycade.SkycadeCore.utility.ItemBuilder;
 import net.skycade.SkycadeEnchants.enchant.common.EnchantmentManager;
+import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -37,7 +38,7 @@ public abstract class MendingScarabItem extends CustomItem {
     }
 
     private boolean matches(ItemStack item) {
-        return item.hasItemMeta() && item.getItemMeta().hasLore() && item.getItemMeta().getLore().equals(mendingScarab.getItemMeta().getLore());
+        return item.hasItemMeta() && item.getItemMeta().hasLore() || item.getItemMeta().getLore().contains(CustomItemManager.MAGIC);
     }
 
     @Override
@@ -66,7 +67,7 @@ public abstract class MendingScarabItem extends CustomItem {
 
     public static List<String> getLore() {
         return Arrays.asList(
-                "",
+                CustomItemManager.MAGIC,
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Fixes any damaged item you wish!",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Drag onto the item to use!"

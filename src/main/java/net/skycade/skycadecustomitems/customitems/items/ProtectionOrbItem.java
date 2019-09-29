@@ -4,6 +4,7 @@ import net.skycade.SkycadeCore.ConfigEntry;
 import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
+import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
@@ -59,6 +60,7 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() != (Action.RIGHT_CLICK_AIR) && event.getAction() != (Action.RIGHT_CLICK_BLOCK)) return;
         if (event.getPlayer() == null || !event.getPlayer().isSneaking()) return;
+        if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasLore() || !event.getItem().getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName() || !event.getItem().getItemMeta().getDisplayName().equals(getName())) return;
 
         activeOrbs.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + (PROTECTION_ORB_DURATION.getValue()*60)*1000);
@@ -147,7 +149,7 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
 
     public static List<String> getLore() {
         return Arrays.asList(
-                "",
+                CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Duration: " + ChatColor.WHITE + "%current% Minutes",
                 "",
                 ChatColor.GRAY + "Prevents you from attacking, and anyone from attacking you!",

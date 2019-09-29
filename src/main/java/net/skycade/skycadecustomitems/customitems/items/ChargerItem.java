@@ -65,7 +65,8 @@ public class ChargerItem extends CustomItem implements Listener {
         ItemStack hoveredItem = event.getCursor();
         ItemStack clickedItem = event.getCurrentItem();
         if (event.getWhoClicked().getType() != EntityType.PLAYER) return;
-        if (hoveredItem.getType() == null || hoveredItem.getType() == Material.AIR || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasDisplayName() || !hoveredItem.getItemMeta().getDisplayName().equals(getName())) return;
+        if (hoveredItem.getType() == null || hoveredItem.getType() == Material.AIR || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasLore() || !hoveredItem.getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
+        if (hoveredItem.getType() == null || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasDisplayName() || !hoveredItem.getItemMeta().getDisplayName().equals(getName())) return;
         if (clickedItem.getType() == null || clickedItem.getType() == Material.AIR || !clickedItem.hasItemMeta() || !clickedItem.getItemMeta().hasDisplayName() || !clickedItem.getItemMeta().getDisplayName().equals(CustomItemManager.getAllCustomItems().get("LEGENDARY_VIAL").getName())) return;
 
         int addedCharges = getCurrentNum(hoveredItem, "Charges");
@@ -89,7 +90,7 @@ public class ChargerItem extends CustomItem implements Listener {
 
     private List<String> getLore() {
         return Arrays.asList(
-                "",
+                CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Charges: " + ChatColor.WHITE + "%current%",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Chargers are required to use Legendary Vials!",
