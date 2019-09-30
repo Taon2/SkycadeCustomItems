@@ -38,7 +38,8 @@ public abstract class MendingScarabItem extends CustomItem {
     }
 
     private boolean matches(ItemStack item) {
-        return item.hasItemMeta() && item.getItemMeta().hasLore() || item.getItemMeta().getLore().contains(CustomItemManager.MAGIC);
+        return item.hasItemMeta() && item.getItemMeta().hasLore() && item.getItemMeta().getLore().contains(CustomItemManager.MAGIC) &&
+                item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equals(getName());
     }
 
     @Override

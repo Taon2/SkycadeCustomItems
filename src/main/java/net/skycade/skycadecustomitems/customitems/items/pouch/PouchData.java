@@ -3,6 +3,8 @@ package net.skycade.skycadecustomitems.customitems.items.pouch;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import net.minecraft.server.v1_8_R3.NBTTagInt;
 import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.AsyncScheduler;
 import net.skycade.SkycadeCore.utility.CoreUtil;
@@ -10,6 +12,7 @@ import net.skycade.SkycadeCore.utility.ItemBuilder;
 import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -75,25 +78,13 @@ public class PouchData {
 
     public static Integer getPouchId(ItemStack item) {
         if (item == null) return null;
-
-        if (SkycadeCustomItemsPlugin.v18) {
-            net.minecraft.server.v1_8_R3.ItemStack itemStack = org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(item);
-            if (itemStack == null || !itemStack.hasTag()) return null;
-            if (!itemStack.getTag().hasKey("pouch_id")) {
-                return null;
-            }
-
-            return ((net.minecraft.server.v1_8_R3.NBTTagInt) itemStack.getTag().get("pouch_id")).d();
+        net.minecraft.server.v1_8_R3.ItemStack itemStack = CraftItemStack.asNMSCopy(item);
+        if (itemStack == null || !itemStack.hasTag()) return null;
+        if (!itemStack.getTag().hasKey("pouch_id")) {
+            return null;
         }
-        else {
-            net.minecraft.server.v1_12_R1.ItemStack itemStack = org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(item);
-            if (itemStack == null || !itemStack.hasTag()) return null;
-            if (itemStack.getTag() != null && !itemStack.getTag().hasKey("pouch_id")) {
-                return null;
-            }
 
-            return ((net.minecraft.server.v1_12_R1.NBTTagInt) itemStack.getTag().get("pouch_id")).e();
-        }
+        return ((NBTTagInt) itemStack.getTag().get("pouch_id")).d();
     }
 
     public static ItemStack getItem(int id) {
@@ -101,24 +92,12 @@ public class PouchData {
                 .setDisplayName(ChatColor.GOLD + "Pouch")
                 .build();
 
-        if (SkycadeCustomItemsPlugin.v18) {
-            net.minecraft.server.v1_8_R3.ItemStack itemStack = org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(item);
-            net.minecraft.server.v1_8_R3.NBTTagCompound nbt = itemStack.getTag();
-            nbt.set("pouch_id", new net.minecraft.server.v1_8_R3.NBTTagInt(id));
-            itemStack.setTag(nbt);
+        net.minecraft.server.v1_8_R3.ItemStack itemStack = CraftItemStack.asNMSCopy(item);
+        NBTTagCompound nbt = itemStack.getTag();
+        nbt.set("pouch_id", new NBTTagInt(id));
+        itemStack.setTag(nbt);
 
-            return org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asBukkitCopy(itemStack);
-        }
-        else {
-            net.minecraft.server.v1_12_R1.ItemStack itemStack = org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(item);
-            net.minecraft.server.v1_12_R1.NBTTagCompound nbt = itemStack.getTag();
-            if (nbt != null) {
-                nbt.set("pouch_id", new net.minecraft.server.v1_12_R1.NBTTagInt(id));
-            }
-            itemStack.setTag(nbt);
-
-            return org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asBukkitCopy(itemStack);
-        }
+        return CraftItemStack.asBukkitCopy(itemStack);
     }
 
     private final int id;
