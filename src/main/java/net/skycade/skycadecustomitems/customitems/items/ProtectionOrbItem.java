@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ProtectionOrbItem extends CustomItem implements Listener {
     public static final ConfigEntry<Integer> PROTECTION_ORB_DURATION = new ConfigEntry<>("prisons", "protection-orb-duration", 10);
@@ -39,11 +40,6 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
             ItemMeta meta = is.getItemMeta();
             meta.setLore(getLore());
             is.setItemMeta(meta);
-
-            if (SkycadeCustomItemsPlugin.v18)
-                setMaxStackSize(is, org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(is), 1);
-            else
-                setMaxStackSize(is, org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(is), 1);
 
             setNum(is, getLore(), "Duration", PROTECTION_ORB_DURATION.getValue());
 
@@ -148,10 +144,11 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
 
 
     public static List<String> getLore() {
+        int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Duration: " + ChatColor.WHITE + "%current% Minutes",
-                "",
+                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
                 ChatColor.GRAY + "Prevents you from attacking, and anyone from attacking you!",
                 "",
                 ChatColor.GRAY + "Use " + ChatColor.WHITE + "/entercombat" + ChatColor.GRAY + " to leave",

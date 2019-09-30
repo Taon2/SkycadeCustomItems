@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static net.skycade.prisons.util.Messages.POUCH_UPGRADER_MAX_LEVEL;
 import static net.skycade.prisons.util.Messages.POUCH_UPGRADER_SUCCESS;
@@ -35,11 +36,6 @@ public class PouchUpgraderItem extends CustomItem {
             ItemMeta meta = is.getItemMeta();
             meta.setLore(getLore());
             is.setItemMeta(meta);
-
-            if (SkycadeCustomItemsPlugin.v18)
-                setMaxStackSize(is, org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(is), 1);
-            else
-                setMaxStackSize(is, org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(is), 1);
 
             InventoryUtil.giveItems(p, is);
         }
@@ -79,10 +75,11 @@ public class PouchUpgraderItem extends CustomItem {
     }
 
     public static List<String> getLore() {
+        int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Upgrades your Pouch by one tier!",
-                "",
+                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Click onto a Pouch to upgrade it!"
         );
     }

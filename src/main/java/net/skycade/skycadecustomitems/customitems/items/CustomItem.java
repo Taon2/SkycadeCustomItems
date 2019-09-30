@@ -132,23 +132,24 @@ public abstract class CustomItem implements Listener {
         item.setItemMeta(meta);
     }
 
-    protected void setMaxStackSize(ItemStack original, net.minecraft.server.v1_8_R3.ItemStack nmsItem, int amount){
-        try {
-            Field field = net.minecraft.server.v1_8_R3.Item.class.getDeclaredField("maxStackSize");
-            field.setAccessible(true);
-            field.setInt(nmsItem.getItem(), amount);
-        } catch (Exception ignored) {}
-
-        original.setItemMeta(org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.getItemMeta(nmsItem));
-    }
-
-    protected void setMaxStackSize(ItemStack original, net.minecraft.server.v1_12_R1.ItemStack nmsItem, int amount){
-        try {
-            Field field = net.minecraft.server.v1_12_R1.Item.class.getDeclaredField("maxStackSize");
-            field.setAccessible(true);
-            field.setInt(nmsItem.getItem(), amount);
-        } catch (Exception ignored) {}
-
-        original.setItemMeta(org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.getItemMeta(nmsItem));
-    }
+    //Unused due to this setting the stack size for all items, not just custom ones.
+//    protected void setMaxStackSize(ItemStack original, net.minecraft.server.v1_8_R3.ItemStack nmsItem, int amount){
+//        try {
+//            Field field = net.minecraft.server.v1_8_R3.Item.class.getDeclaredField("maxStackSize");
+//            field.setAccessible(true);
+//            field.setInt(nmsItem.getItem(), amount);
+//        } catch (Exception ignored) {}
+//
+//        original.setItemMeta(org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.getItemMeta(nmsItem));
+//    }
+//
+//    protected void setMaxStackSize(ItemStack original, net.minecraft.server.v1_12_R1.ItemStack nmsItem, int amount){
+//        try {
+//            Field field = net.minecraft.server.v1_12_R1.Item.class.getDeclaredField("maxStackSize");
+//            field.setAccessible(true);
+//            field.setInt(nmsItem.getItem(), amount);
+//        } catch (Exception ignored) {}
+//
+//        original.setItemMeta(org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.getItemMeta(nmsItem));
+//    }
 }

@@ -19,6 +19,7 @@ import tech.mcprison.prison.mines.data.Mine;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static net.skycade.prisons.util.SpigotUtil.unwrap;
 import static net.skycade.prisons.util.SpigotUtil.wrap;
@@ -45,11 +46,6 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
             ItemMeta meta = is.getItemMeta();
             meta.setLore(getLore());
             is.setItemMeta(meta);
-
-            if (SkycadeCustomItemsPlugin.v18)
-                setMaxStackSize(is, org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(is), 1);
-            else
-                setMaxStackSize(is, org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(is), 1);
 
             setNum(is, getLore(), "Uses", TELEPORTATION_ORB_USES.getValue());
 
@@ -96,10 +92,11 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
     }
 
     public static List<String> getLore() {
+        int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Uses: " + ChatColor.WHITE + "%current%",
-                "",
+                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Teleports you to the beginning of the mine you are in!",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Shift + Right Click to use!"

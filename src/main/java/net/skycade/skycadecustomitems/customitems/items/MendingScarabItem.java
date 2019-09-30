@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static net.skycade.prisons.util.Messages.REPAIRED;
 
@@ -67,10 +68,11 @@ public abstract class MendingScarabItem extends CustomItem {
     }
 
     public static List<String> getLore() {
+        int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Fixes any damaged item you wish!",
-                "",
+                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Drag onto the item to use!"
         );
     }

@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static net.skycade.prisons.util.SpigotUtil.wrap;
 
@@ -58,11 +59,6 @@ public class ExperienceBoosterItem extends CustomItem implements Listener {
             ItemMeta meta = is.getItemMeta();
             meta.setLore(getLore());
             is.setItemMeta(meta);
-
-            if (SkycadeCustomItemsPlugin.v18)
-                setMaxStackSize(is, org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(is), 1);
-            else
-                setMaxStackSize(is, org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(is), 1);
 
             setNum(is, getLore(), "Duration", duration);
 
@@ -150,10 +146,11 @@ public class ExperienceBoosterItem extends CustomItem implements Listener {
     }
 
     public static List<String> getLore() {
+        int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Duration: " + ChatColor.WHITE + "%current% Minutes",
-                "",
+                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
                 ChatColor.GRAY + "Gain double experience while mining!",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Shift + Right Click to activate!"

@@ -1,6 +1,7 @@
 package net.skycade.skycadecustomitems.customitems.listeners;
 
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ProtectionListener implements Listener {
 
@@ -31,6 +33,8 @@ public class ProtectionListener implements Listener {
                     ItemMeta meta = clicked.getItemMeta();
                     List<String> lore = meta.getLore();
                     lore.set(0, CustomItemManager.MAGIC);
+                    int random = ThreadLocalRandom.current().nextInt();;
+                    lore.set(3, Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)));
 
                     meta.setLore(lore);
                     clicked.setItemMeta(meta);

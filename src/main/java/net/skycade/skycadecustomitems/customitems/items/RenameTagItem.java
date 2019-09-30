@@ -19,6 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
 
 public class RenameTagItem extends CustomItem implements Listener {
@@ -37,11 +38,6 @@ public class RenameTagItem extends CustomItem implements Listener {
             ItemMeta meta = is.getItemMeta();
             meta.setLore(getLore());
             is.setItemMeta(meta);
-
-            if (SkycadeCustomItemsPlugin.v18)
-                setMaxStackSize(is, org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(is), 1);
-            else
-                setMaxStackSize(is, org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(is), 1);
 
             InventoryUtil.giveItems(p, is);
         }
@@ -130,10 +126,11 @@ public class RenameTagItem extends CustomItem implements Listener {
     }
 
     private List<String> getLore() {
+        int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Allows you to rename an item with colors.",
-                "",
+                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Click onto an item to rename it!"
         );
     }

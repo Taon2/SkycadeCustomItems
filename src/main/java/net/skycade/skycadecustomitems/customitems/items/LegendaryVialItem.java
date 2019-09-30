@@ -36,11 +36,6 @@ public class LegendaryVialItem extends CustomItem implements Listener {
             meta.setLore(getLore());
             is.setItemMeta(meta);
 
-            if (SkycadeCustomItemsPlugin.v18)
-                setMaxStackSize(is, org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(is), 1);
-            else
-                setMaxStackSize(is, org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(is), 1);
-
             setMaxNum(is, is.getItemMeta().getLore(), 100);
             setNum(is, getLore(), "Charges", 0);
 
@@ -77,10 +72,11 @@ public class LegendaryVialItem extends CustomItem implements Listener {
     }
 
     public static List<String> getLore() {
+        int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Charges: " + ChatColor.WHITE + "%current%/%max%",
-                "",
+                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Awards you with one Legendary enchantment book!",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Shift + Right Click to use!"

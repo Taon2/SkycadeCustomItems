@@ -35,11 +35,6 @@ public class ChargerItem extends CustomItem implements Listener {
             meta.setLore(getLore());
             is.setItemMeta(meta);
 
-            if (SkycadeCustomItemsPlugin.v18)
-                setMaxStackSize(is, org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(is), 1);
-            else
-                setMaxStackSize(is, org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(is), 1);
-
             setNum(is, getLore(), "Charges", ThreadLocalRandom.current().nextInt(5, 26));
 
             InventoryUtil.giveItems(p, is);
@@ -89,10 +84,11 @@ public class ChargerItem extends CustomItem implements Listener {
     }
 
     private List<String> getLore() {
+        int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Charges: " + ChatColor.WHITE + "%current%",
-                "",
+                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Chargers are required to use Legendary Vials!",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Click onto a Legendary Vial to charge it!"

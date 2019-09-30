@@ -14,7 +14,6 @@ public class MendingScarabItem1_8 extends MendingScarabItem {
         for (int i = amount; i > 0; i--) {
 
             ItemStack item = mendingScarab.clone();
-            setMaxStackSize(item, org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(item), 1);
             net.minecraft.server.v1_8_R3.ItemStack itemStack = org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(item);
             net.minecraft.server.v1_8_R3.NBTTagCompound nbt = itemStack.getTag();
             nbt.set("mending", new net.minecraft.server.v1_8_R3.NBTTagInt(ThreadLocalRandom.current().nextInt()));
