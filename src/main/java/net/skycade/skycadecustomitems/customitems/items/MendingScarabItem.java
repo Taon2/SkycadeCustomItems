@@ -3,6 +3,7 @@ package net.skycade.skycadecustomitems.customitems.items;
 import net.skycade.SkycadeCore.utility.ItemBuilder;
 import net.skycade.SkycadeEnchants.enchant.common.EnchantmentManager;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -50,6 +51,8 @@ public abstract class MendingScarabItem extends CustomItem {
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
+        int random = ThreadLocalRandom.current().nextInt();
+        Bukkit.getLogger().info(Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)));
         if (event.getCursor() == null || event.getCurrentItem() == null) return;
         ItemStack hoveredItem = event.getCursor();
         ItemStack clickedItem = event.getCurrentItem();

@@ -1,7 +1,6 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
-import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

@@ -33,8 +33,8 @@ public class ProtectionListener implements Listener {
                     ItemMeta meta = clicked.getItemMeta();
                     List<String> lore = meta.getLore();
                     lore.set(0, CustomItemManager.MAGIC);
-                    int random = ThreadLocalRandom.current().nextInt();;
-                    lore.set(3, Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)));
+                    int random = ThreadLocalRandom.current().nextInt();
+                    lore.set(2, Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)));
 
                     meta.setLore(lore);
                     clicked.setItemMeta(meta);
@@ -46,6 +46,8 @@ public class ProtectionListener implements Listener {
                     ItemMeta meta = cursor.getItemMeta();
                     List<String> lore = meta.getLore();
                     lore.set(0, CustomItemManager.MAGIC);
+                    int random = ThreadLocalRandom.current().nextInt();
+                    lore.set(2, Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)));
 
                     meta.setLore(lore);
                     cursor.setItemMeta(meta);
