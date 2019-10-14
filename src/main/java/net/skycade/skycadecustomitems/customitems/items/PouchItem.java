@@ -12,7 +12,9 @@ import net.skycade.skycadeshop.SkycadeShopPlugin;
 import net.skycade.skycadeshop.impl.skycade.SkycadeShop;
 import net.skycade.skycadeshop.impl.skycade.SkycadeShoppable;
 import net.skycade.skycadeshop.impl.skycade.event.PreSellTransactionEvent;
+import net.skycade.skycadeshop.impl.skycade.event.SellAllEvent;
 import net.skycade.skycadeshop.impl.skycade.shoppable.Item;
+import net.skycade.skycadeshop.shop.Shoppable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -215,10 +217,44 @@ public class PouchItem extends CustomItem {
     public class ShopListener implements Listener {
 
         @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+        public void onSellAll(SellAllEvent event) {
+            //If pouches are disabled, don't run
+            if (SkycadeCustomItemsPlugin.getInstance().getConfig().getBoolean("disabled-items.POUCH")) return;
+
+            SkycadeShop shop = event.getShop();
+            Player player = event.getPlayer();
+
+            for (ItemStack itemStack : player.getInventory().getContents()) {
+                PouchData data = PouchData.getData(itemStack);
+                if (data == null) continue;
+
+                ItemStack[] contents = data.getContents();
+                for (int i = 0; i < contents.length; ++i) {
+                    ItemStack pouchItem = contents[i];
+                    if (pouchItem == null) continue;
+
+                    SkycadeShoppable shoppable = (SkycadeShoppable) shop.get("item:" + pouchItem.getType().name() + ":" + pouchItem.getDurability())
+                            .filter(Shoppable::isSellable).orElse(null);
+
+                    if (shoppable != null) {
+                        int amount = pouchItem.getAmount();
+                        contents[i] = null;
+                        double unitSellPrice = shoppable.getUnitSellPrice();
+                        if (shoppable.isIncreasable())
+                            unitSellPrice = (1 + ((SkycadeShop) SkycadeShopPlugin.getInstance().getShop()).getIncreaseFor(player)) * unitSellPrice;
+
+                        event.setPreSold(event.getPreSold() + unitSellPrice * amount);
+                    }
+                }
+
+                data.setContents(contents);
+            }
+        }
+
+        @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
         public void onPreSellTransaction(PreSellTransactionEvent event) {
             //If pouches are disabled, don't run
-            String node = "disabled-items.POUCH";
-            if (SkycadeCustomItemsPlugin.getInstance().getConfig().getBoolean(node)) return;
+            if (SkycadeCustomItemsPlugin.getInstance().getConfig().getBoolean("disabled-items.POUCH")) return;
 
             Player player = event.getPlayer();
             SkycadeShoppable shoppable = event.getShoppable();

@@ -23,7 +23,7 @@ import static net.skycade.prisons.util.Messages.POUCH_UPGRADER_SUCCESS;
 public class PouchUpgraderItem extends CustomItem {
 
     public PouchUpgraderItem() {
-        super("POUCH_UPGRADER", ChatColor.GREEN + "Pouch Upgrader", getRawLore(), Material.BEACON);
+        super("POUCH_UPGRADER", ChatColor.GREEN + "Pouch Upgrader", "Tier", getRawLore(), Material.BEACON);
     }
 
     @Override
