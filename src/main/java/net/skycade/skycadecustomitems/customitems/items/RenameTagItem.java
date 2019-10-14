@@ -1,7 +1,6 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
-import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,7 +23,7 @@ import java.util.function.BiConsumer;
 
 public class RenameTagItem extends CustomItem implements Listener {
     public RenameTagItem() {
-        super("RENAME_TAG", ChatColor.DARK_PURPLE + "Rename Tag", Material.NAME_TAG);
+        super("RENAME_TAG", ChatColor.DARK_PURPLE + "Rename Tag", getRawLore(), Material.NAME_TAG);
     }
 
     private static Map<UUID, BiConsumer<Player, String>> listenForInput = new HashMap<>();
@@ -125,7 +124,7 @@ public class RenameTagItem extends CustomItem implements Listener {
         }
     }
 
-    private List<String> getLore() {
+    public static List<String> getRawLore() {
         int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,

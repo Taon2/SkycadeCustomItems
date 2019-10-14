@@ -4,7 +4,6 @@ import com.google.common.eventbus.Subscribe;
 import net.skycade.SkycadeCore.ConfigEntry;
 import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
-import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -28,7 +27,7 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
     public static final ConfigEntry<Integer> TELEPORTATION_ORB_USES = new ConfigEntry<>("prisons", "teleportation-orb-uses", 10);
 
     public TeleportationOrbItem() {
-        super("TELEPORTATION_ORB", ChatColor.DARK_AQUA + "Teleportation Orb", Material.SLIME_BALL);
+        super("TELEPORTATION_ORB", ChatColor.DARK_AQUA + "Teleportation Orb", "Uses", getRawLore(), Material.SLIME_BALL);
         CoreSettings.getInstance().registerSetting(TELEPORTATION_ORB_USES);
     }
 
@@ -47,7 +46,7 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
             meta.setLore(getLore());
             is.setItemMeta(meta);
 
-            setNum(is, getLore(), "Uses", TELEPORTATION_ORB_USES.getValue());
+            setNum(is, getLore(), getCounted(), TELEPORTATION_ORB_USES.getValue());
 
             InventoryUtil.giveItems(p, is);
         }
@@ -67,15 +66,15 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
         if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasLore() || !item.getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName() || !item.getItemMeta().getDisplayName().equals(getName())) return;
 
-        if (getCurrentNum(item, "Uses") > 0) {
+        if (getCurrentNum(item, getCounted()) > 0) {
             for (Mine mine : PrisonMines.getInstance().getMines()) {
                 if (mine.isInMine(wrap(player.getLocation()))) {
                     mine.getSpawn().ifPresent(s -> player.teleport(unwrap(s)));
 
-                    setNum(item, getLore(), "Uses", getCurrentNum(item, "Uses") - 1);
+                    setNum(item, getLore(), getCounted(), getCurrentNum(item, getCounted()) - 1);
                     event.getPlayer().sendMessage(ChatColor.GREEN + "Poof!");
 
-                    if (getCurrentNum(item, "Uses") <= 0) {
+                    if (getCurrentNum(item, getCounted()) <= 0) {
                         event.getPlayer().getInventory().removeItem(item);
                     }
                     event.setCancelled(true);
@@ -91,7 +90,7 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
         }
     }
 
-    public static List<String> getLore() {
+    public static List<String> getRawLore() {
         int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,

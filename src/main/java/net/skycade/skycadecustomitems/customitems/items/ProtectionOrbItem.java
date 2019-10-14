@@ -3,7 +3,6 @@ package net.skycade.skycadecustomitems.customitems.items;
 import net.skycade.SkycadeCore.ConfigEntry;
 import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
-import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,7 +24,7 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
     public static final ConfigEntry<Integer> PROTECTION_ORB_DURATION = new ConfigEntry<>("prisons", "protection-orb-duration", 10);
 
     public ProtectionOrbItem() {
-        super("PROTECTION_ORB", ChatColor.DARK_AQUA + "Protection Orb", Material.MAGMA_CREAM);
+        super("PROTECTION_ORB", ChatColor.DARK_AQUA + "Protection Orb", "Duration", getRawLore(), Material.MAGMA_CREAM);
         CoreSettings.getInstance().registerSetting(PROTECTION_ORB_DURATION);
     }
 
@@ -41,7 +40,7 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
             meta.setLore(getLore());
             is.setItemMeta(meta);
 
-            setNum(is, getLore(), "Duration", PROTECTION_ORB_DURATION.getValue());
+            setNum(is, getLore(), getCounted(), PROTECTION_ORB_DURATION.getValue());
 
             InventoryUtil.giveItems(p, is);
         }
@@ -142,8 +141,7 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
         }
     }
 
-
-    public static List<String> getLore() {
+    public static List<String> getRawLore() {
         int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,

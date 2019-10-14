@@ -42,7 +42,7 @@ import static net.skycade.prisons.util.Messages.TOO_MANY_POUCHES;
 
 public class PouchItem extends CustomItem {
     public PouchItem() {
-        super("POUCH", ChatColor.GOLD + "Pouch", Material.INK_SACK);
+        super("POUCH", ChatColor.GOLD + "Pouch", "Tier", getRawLore(), Material.INK_SACK);
 
         // in case there's no plugin this would fail and we all good
         Bukkit.getPluginManager().registerEvents(new ShopListener(), SkycadeCustomItemsPlugin.getInstance());
@@ -60,7 +60,7 @@ public class PouchItem extends CustomItem {
 
             PouchData data = new PouchData(PouchData.getPouchId(is));
             data.setLevel(1);
-            setNum(is, getLore(), "Tier", data.getLevel());
+            setNum(is, getLore(), getCounted(), data.getLevel());
 
             InventoryUtil.giveItems(p, is);
         }
@@ -281,7 +281,7 @@ public class PouchItem extends CustomItem {
         return numPouches >= 3;
     }
 
-    public static List<String> getLore() {
+    public static List<String> getRawLore() {
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Tier: " + ChatColor.WHITE + "%current%",

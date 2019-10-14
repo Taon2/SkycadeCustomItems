@@ -3,7 +3,6 @@ package net.skycade.skycadecustomitems.customitems.items;
 import net.skycade.SkycadeCore.utility.ItemBuilder;
 import net.skycade.SkycadeEnchants.enchant.common.EnchantmentManager;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -27,7 +26,7 @@ public abstract class MendingScarabItem extends CustomItem {
     static {
         mendingScarab = new ItemBuilder(Material.EMERALD)
                 .setDisplayName(ChatColor.GREEN + "Mending Scarab")
-                .setLore(getLore())
+                .setLore(getRawLore())
                 .build();
 
         Map<org.bukkit.enchantments.Enchantment, Integer> enchants = new HashMap<>();
@@ -36,7 +35,7 @@ public abstract class MendingScarabItem extends CustomItem {
     }
 
     public MendingScarabItem() {
-        super("MENDING_SCARAB", ChatColor.GREEN + "Mending Scarab", Material.EMERALD);
+        super("MENDING_SCARAB", ChatColor.GREEN + "Mending Scarab", getRawLore(), Material.EMERALD);
     }
 
     private boolean matches(ItemStack item) {
@@ -52,7 +51,6 @@ public abstract class MendingScarabItem extends CustomItem {
     @EventHandler(ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
         int random = ThreadLocalRandom.current().nextInt();
-        Bukkit.getLogger().info(Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)));
         if (event.getCursor() == null || event.getCurrentItem() == null) return;
         ItemStack hoveredItem = event.getCursor();
         ItemStack clickedItem = event.getCurrentItem();
@@ -70,7 +68,7 @@ public abstract class MendingScarabItem extends CustomItem {
         REPAIRED.msg(event.getWhoClicked());
     }
 
-    public static List<String> getLore() {
+    public static List<String> getRawLore() {
         int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,

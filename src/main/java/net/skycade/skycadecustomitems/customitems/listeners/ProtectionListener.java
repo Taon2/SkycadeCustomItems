@@ -1,7 +1,7 @@
 package net.skycade.skycadecustomitems.customitems.listeners;
 
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
-import org.bukkit.ChatColor;
+import net.skycade.skycadecustomitems.customitems.items.CustomItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,10 +14,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class ProtectionListener implements Listener {
 
@@ -30,27 +28,25 @@ public class ProtectionListener implements Listener {
         CustomItemManager.getAllCustomItems().forEach((s, customItem) -> {
             if (clicked != null && clicked.hasItemMeta() && clicked.getItemMeta().hasDisplayName() && clicked.getItemMeta().getDisplayName().equals(customItem.getName())) {
                 if (clicked.getItemMeta().hasLore() && !clicked.getItemMeta().getLore().contains(CustomItemManager.MAGIC)) {
-                    ItemMeta meta = clicked.getItemMeta();
-                    List<String> lore = meta.getLore();
-                    lore.set(0, CustomItemManager.MAGIC);
-                    int random = ThreadLocalRandom.current().nextInt();
-                    lore.set(2, Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)));
+                    int count = CustomItem.getCurrentNum(clicked, customItem.getCounted());
+                    int max = CustomItem.getMaxNum(clicked, customItem.getCounted());
 
-                    meta.setLore(lore);
-                    clicked.setItemMeta(meta);
+                    List<String> lore = customItem.getLore();
+
+                    CustomItem.setNum(clicked, lore, customItem.getCounted(), count);
+                    CustomItem.setMaxNum(clicked, lore, max);
                 }
             }
 
             if (cursor != null && cursor.hasItemMeta() && cursor.getItemMeta().hasDisplayName() && cursor.getItemMeta().getDisplayName().equals(customItem.getName())) {
                 if (cursor.getItemMeta().hasLore() && !cursor.getItemMeta().getLore().contains(CustomItemManager.MAGIC)) {
-                    ItemMeta meta = cursor.getItemMeta();
-                    List<String> lore = meta.getLore();
-                    lore.set(0, CustomItemManager.MAGIC);
-                    int random = ThreadLocalRandom.current().nextInt();
-                    lore.set(2, Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)));
+                    int count = CustomItem.getCurrentNum(cursor, customItem.getCounted());
+                    int max = CustomItem.getMaxNum(cursor, customItem.getCounted());
 
-                    meta.setLore(lore);
-                    cursor.setItemMeta(meta);
+                    List<String> lore = customItem.getLore();
+
+                    CustomItem.setNum(cursor, lore, customItem.getCounted(), count);
+                    CustomItem.setMaxNum(cursor, lore, max);
                 }
             }
         });

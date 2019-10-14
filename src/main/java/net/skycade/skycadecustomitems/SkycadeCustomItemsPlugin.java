@@ -30,8 +30,6 @@ public class SkycadeCustomItemsPlugin extends SkycadePlugin {
 
         v18 = Bukkit.getServer().getClass().getPackage().getName().contains("1_8");
 
-        Bukkit.getLogger().info(Boolean.toString(v18));
-
         registerListeners(new ProtectionListener());
         if (!v18) registerListeners(new ProtectionListener1_12());
 

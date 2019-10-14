@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ChargerItem extends CustomItem implements Listener {
     public ChargerItem() {
-        super("CHARGER", ChatColor.RED + "Charger", Material.FIREBALL);
+        super("CHARGER", ChatColor.RED + "Charger", "Charges", getRawLore(), Material.FIREBALL);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ChargerItem extends CustomItem implements Listener {
             meta.setLore(getLore());
             is.setItemMeta(meta);
 
-            setNum(is, getLore(), "Charges", ThreadLocalRandom.current().nextInt(5, 26));
+            setNum(is, getLore(), getCounted(), ThreadLocalRandom.current().nextInt(5, 26));
 
             InventoryUtil.giveItems(p, is);
         }
@@ -63,18 +63,18 @@ public class ChargerItem extends CustomItem implements Listener {
         if (hoveredItem.getType() == null || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasDisplayName() || !hoveredItem.getItemMeta().getDisplayName().equals(getName())) return;
         if (clickedItem.getType() == null || clickedItem.getType() == Material.AIR || !clickedItem.hasItemMeta() || !clickedItem.getItemMeta().hasDisplayName() || !clickedItem.getItemMeta().getDisplayName().equals(CustomItemManager.getAllCustomItems().get("LEGENDARY_VIAL").getName())) return;
 
-        int addedCharges = getCurrentNum(hoveredItem, "Charges");
-        int currentCharges = getCurrentNum(clickedItem, "Charges");
-        int maxCharges = getMaxNum(clickedItem, "Charges");
+        int addedCharges = getCurrentNum(hoveredItem, getCounted());
+        int currentCharges = getCurrentNum(clickedItem, getCounted());
+        int maxCharges = getMaxNum(clickedItem, getCounted());
 
         if (currentCharges == maxCharges) {
             event.getWhoClicked().sendMessage(ChatColor.RED + "That item is already fully charged!");
         } else if (maxCharges != -1 && currentCharges + addedCharges > maxCharges) {
-            setNum(clickedItem, LegendaryVialItem.getLore(), "Charges", maxCharges);
+            setNum(clickedItem, LegendaryVialItem.getRawLore(), getCounted(), maxCharges);
             event.getWhoClicked().setItemOnCursor(null);
             ((Player) event.getWhoClicked()).updateInventory();
         } else {
-            setNum(clickedItem, LegendaryVialItem.getLore(), "Charges", (currentCharges + addedCharges));
+            setNum(clickedItem, LegendaryVialItem.getRawLore(), getCounted(), (currentCharges + addedCharges));
             event.getWhoClicked().setItemOnCursor(null);
             ((Player) event.getWhoClicked()).updateInventory();
         }
@@ -82,7 +82,7 @@ public class ChargerItem extends CustomItem implements Listener {
         event.setCancelled(true);
     }
 
-    private List<String> getLore() {
+    public static List<String> getRawLore() {
         int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,

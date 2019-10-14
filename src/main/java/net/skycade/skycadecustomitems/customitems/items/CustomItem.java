@@ -7,17 +7,33 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 public abstract class CustomItem implements Listener {
 
     private final String handle;
     private final String name;
+    private final List<String> lore;
+    private String counted = "None";
     private ItemStack item;
 
-    CustomItem(String handle, String name, Material type) {
+    CustomItem(String handle, String name, List<String> lore, Material type) {
         this.handle = handle;
+        this.lore = lore;
+        this.name = name;
+
+        ItemStack is = new ItemStack(type);
+        ItemMeta meta = is.getItemMeta();
+        meta.setDisplayName(name);
+        is.setItemMeta(meta);
+
+        item = is.clone();
+    }
+
+    CustomItem(String handle, String name, String counted, List<String> lore, Material type) {
+        this.handle = handle;
+        this.counted = counted;
+        this.lore = lore;
         this.name = name;
 
         ItemStack is = new ItemStack(type);
@@ -43,6 +59,10 @@ public abstract class CustomItem implements Listener {
         return name;
     }
 
+    public String getCounted() {
+        return counted;
+    }
+
     ItemStack getItem() {
         if (item == null) {
             item = new ItemStack(Material.WOOD_SWORD);
@@ -55,7 +75,7 @@ public abstract class CustomItem implements Listener {
 
     public abstract void giveItem(Player p, int duration, int amount);
 
-    int getCurrentNum(ItemStack item, String toGet) {
+    public static int getCurrentNum(ItemStack item, String toGet) {
         int current = 0;
 
         for (String line : item.getItemMeta().getLore()) {
@@ -74,7 +94,7 @@ public abstract class CustomItem implements Listener {
         return current;
     }
 
-    void setNum(ItemStack item, List<String> newLore, String toSet, int value) {
+    public static void setNum(ItemStack item, List<String> newLore, String toSet, int value) {
         int maxNum = getMaxNum(item, toSet);
 
         ItemMeta meta = item.getItemMeta();
@@ -98,7 +118,7 @@ public abstract class CustomItem implements Listener {
         }
     }
 
-    int getMaxNum(ItemStack item, String toGet) {
+    public static int getMaxNum(ItemStack item, String toGet) {
         int charges = -1;
 
         for (String line : item.getItemMeta().getLore()) {
@@ -112,7 +132,7 @@ public abstract class CustomItem implements Listener {
         return charges;
     }
 
-    void setMaxNum(ItemStack item, List<String> newLore, int maxNum) {
+    public static void setMaxNum(ItemStack item, List<String> newLore, int maxNum) {
         ItemMeta meta = item.getItemMeta();
         if (newLore != null) {
             for (String line : newLore) {
@@ -130,6 +150,10 @@ public abstract class CustomItem implements Listener {
         item.setItemMeta(meta);
 
         item.setItemMeta(meta);
+    }
+
+    public List<String> getLore() {
+        return lore;
     }
 
     //Unused due to this setting the stack size for all items, not just custom ones.

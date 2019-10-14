@@ -1,7 +1,6 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
-import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import net.skycade.skycadecustomitems.customitems.items.pouch.PouchData;
 import org.bukkit.ChatColor;
@@ -24,7 +23,7 @@ import static net.skycade.prisons.util.Messages.POUCH_UPGRADER_SUCCESS;
 public class PouchUpgraderItem extends CustomItem {
 
     public PouchUpgraderItem() {
-        super("POUCH_UPGRADER", ChatColor.GREEN + "Pouch Upgrader", Material.BEACON);
+        super("POUCH_UPGRADER", ChatColor.GREEN + "Pouch Upgrader", getRawLore(), Material.BEACON);
     }
 
     @Override
@@ -57,13 +56,13 @@ public class PouchUpgraderItem extends CustomItem {
         if (hoveredItem.getType() == null || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasDisplayName() || !hoveredItem.getItemMeta().getDisplayName().equals(getName())) return;
         if (clickedItem.getType() == null || clickedItem.getType() == Material.AIR || !clickedItem.hasItemMeta() || !clickedItem.getItemMeta().hasDisplayName() || data == null) return;
 
-        int currentNum = getCurrentNum(clickedItem, "Tier");
+        int currentNum = getCurrentNum(clickedItem, getCounted());
 
         if (currentNum >= 4) {
             POUCH_UPGRADER_MAX_LEVEL.msg(event.getWhoClicked());
         } else {
             data.setLevel(data.getLevel() + 1);
-            setNum(event.getCurrentItem(), PouchItem.getLore(), "Tier", data.getLevel());
+            setNum(event.getCurrentItem(), PouchItem.getRawLore(), getCounted(), data.getLevel());
             event.getWhoClicked().setItemOnCursor(null);
             ((Player) event.getWhoClicked()).updateInventory();
             event.setCancelled(true);
@@ -74,7 +73,7 @@ public class PouchUpgraderItem extends CustomItem {
         event.setCancelled(true);
     }
 
-    public static List<String> getLore() {
+    public static List<String> getRawLore() {
         int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,

@@ -3,7 +3,6 @@ package net.skycade.skycadecustomitems.customitems.items;
 import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.SkycadeEnchants.SkycadeEnchantsPlugin;
-import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -31,7 +30,7 @@ import static net.skycade.prisons.util.SpigotUtil.wrap;
 
 public class ExperienceBoosterItem extends CustomItem implements Listener {
     public ExperienceBoosterItem() {
-        super("EXPERIENCE_BOOSTER", ChatColor.BLUE + "Experience Booster", Material.EYE_OF_ENDER);
+        super("EXPERIENCE_BOOSTER", ChatColor.BLUE + "Experience Booster", getRawLore(), Material.EYE_OF_ENDER);
     }
 
     private String itemTable;
@@ -145,7 +144,7 @@ public class ExperienceBoosterItem extends CustomItem implements Listener {
         }
     }
 
-    public static List<String> getLore() {
+    public static List<String> getRawLore() {
         int random = ThreadLocalRandom.current().nextInt();
         return Arrays.asList(
                 CustomItemManager.MAGIC,
