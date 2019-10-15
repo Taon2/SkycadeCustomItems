@@ -54,7 +54,7 @@ public class PouchItem extends CustomItem {
     public void giveItem(Player p, int num) {
         for (int i = num; i > 0; i--) {
             ItemStack is = PouchData.newPouch();
-            if (is == null) return;
+            //if (is == null) return;
 
             ItemMeta meta = is.getItemMeta();
             meta.setLore(getLore());
@@ -153,7 +153,7 @@ public class PouchItem extends CustomItem {
 
             if (pouchCount > 2) break;
 
-            int max = 18 + (data.getLevel() * 9);
+            int max = Math.min(18 + (data.getLevel() * 9), 54);
 
             ItemStack[] contents = data.getContents();
             int k = -1;
@@ -174,7 +174,7 @@ public class PouchItem extends CustomItem {
                     if (remainingItem.isSimilar(pouchItem)) {
                         int maxAdd = pouchItem.getMaxStackSize() - pouchItem.getAmount();
 
-                        if (remainingItem.getAmount() >= maxAdd) {
+                        if (remainingItem.getAmount() > maxAdd) {
                             remainingItem.setAmount(remainingItem.getAmount() - maxAdd);
                             pouchItem.setAmount(pouchItem.getMaxStackSize());
                         } else {
