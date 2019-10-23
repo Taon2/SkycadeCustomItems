@@ -10,9 +10,11 @@ import net.skycade.SkycadeCore.utility.AsyncScheduler;
 import net.skycade.SkycadeCore.utility.CoreUtil;
 import net.skycade.SkycadeCore.utility.ItemBuilder;
 import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -20,9 +22,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class PouchData {
+
+    private static Map<Integer, Inventory> inventories = new HashMap<>();
+
     private static LoadingCache<Integer, PouchData> cache = CacheBuilder.newBuilder()
             .build(new CacheLoader<Integer, PouchData>() {
                 @Override
@@ -39,6 +46,18 @@ public class PouchData {
                                 PouchData pouch = new PouchData(id);
                                 pouch.setLevel(resultSet.getInt("level"));
                                 pouch.setContents(CoreUtil.itemStackArrayFromBase64(resultSet.getString("contents")));
+
+                                int size = 18 + pouch.getLevel() * 9;
+                                ItemStack[] contents = new ItemStack[size];
+                                System.arraycopy(pouch.getContents(), 0, contents, 0, Math.min(pouch.getContents().length, size));
+
+                                PouchInventoryHolder holder = new PouchInventoryHolder(pouch);
+                                Inventory inventory = Bukkit.createInventory(holder, size, "Pouch");
+                                holder.setInventory(inventory);
+                                inventory.setContents(contents);
+
+                                inventories.put(pouch.getId(), inventory);
+
                                 return pouch;
                             }
 
@@ -67,6 +86,10 @@ public class PouchData {
         if ((id = getPouchId(item)) == null) return null;
 
         return cache.getIfPresent(id);
+    }
+
+    public static Inventory getInventory(int id) {
+        return inventories.get(id);
     }
 
     public static void loadData(ItemStack item) {

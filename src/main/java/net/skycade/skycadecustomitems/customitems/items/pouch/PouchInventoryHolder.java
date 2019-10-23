@@ -6,12 +6,10 @@ import org.bukkit.inventory.InventoryHolder;
 
 public class PouchInventoryHolder implements InventoryHolder {
 
-    private final Player player;
     private final PouchData pouchData;
     private Inventory inventory;
 
-    public PouchInventoryHolder(Player player, PouchData pouchData) {
-        this.player = player;
+    public PouchInventoryHolder(PouchData pouchData) {
         this.pouchData = pouchData;
     }
 

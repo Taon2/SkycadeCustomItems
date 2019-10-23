@@ -54,7 +54,6 @@ public class PouchItem extends CustomItem {
     public void giveItem(Player p, int num) {
         for (int i = num; i > 0; i--) {
             ItemStack is = PouchData.newPouch();
-            //if (is == null) return;
 
             ItemMeta meta = is.getItemMeta();
             meta.setLore(getLore());
@@ -99,17 +98,7 @@ public class PouchItem extends CustomItem {
             return;
         }
 
-        int size = 18 + data.getLevel() * 9;
-        ItemStack[] contents = new ItemStack[size];
-
-        System.arraycopy(data.getContents(), 0, contents, 0, data.getContents().length < size ? data.getContents().length : size);
-
-        PouchInventoryHolder holder = new PouchInventoryHolder(event.getPlayer(), data);
-        Inventory inventory = Bukkit.createInventory(holder, size, "Pouch");
-        holder.setInventory(inventory);
-        inventory.setContents(contents);
-
-        event.getPlayer().openInventory(inventory);
+        event.getPlayer().openInventory(PouchData.getInventory(data.getId()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -119,6 +108,7 @@ public class PouchItem extends CustomItem {
         if (!(inventory.getHolder() instanceof PouchInventoryHolder)) return;
 
         PouchData data = ((PouchInventoryHolder) inventory.getHolder()).getPouchData();
+        //PouchData.getInventory(data.getId()).setContents(inventory.getContents());
         data.setContents(inventory.getContents());
     }
 
