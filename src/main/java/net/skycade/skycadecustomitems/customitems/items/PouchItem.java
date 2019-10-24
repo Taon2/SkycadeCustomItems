@@ -63,6 +63,17 @@ public class PouchItem extends CustomItem {
             data.setLevel(1);
             setNum(is, getLore(), getCounted(), data.getLevel());
 
+            int size = 18 + data.getLevel() * 9;
+            ItemStack[] contents = new ItemStack[size];
+            System.arraycopy(data.getContents(), 0, contents, 0, Math.min(data.getContents().length, size));
+
+            PouchInventoryHolder holder = new PouchInventoryHolder(data);
+            Inventory inventory = Bukkit.createInventory(holder, size, "Pouch");
+            holder.setInventory(inventory);
+            inventory.setContents(contents);
+
+            PouchData.addInventory(data.getId(), inventory);
+
             InventoryUtil.giveItems(p, is);
         }
     }
@@ -134,7 +145,7 @@ public class PouchItem extends CustomItem {
 
         int pouchCount = 0;
 
-        List<Pair<PouchData, Integer>> emptySlots = new ArrayList<>();
+        List<Pair<Inventory, Integer>> emptySlots = new ArrayList<>();
 
         for (ItemStack itemStack : inventory.getContents()) {
             PouchData data = PouchData.getData(itemStack);
@@ -145,14 +156,15 @@ public class PouchItem extends CustomItem {
 
             int max = Math.min(18 + (data.getLevel() * 9), 54);
 
-            ItemStack[] contents = data.getContents();
+            Inventory pouchInventory = PouchData.getInventory(data.getId());
+            ItemStack[] contents = pouchInventory.getContents();
             int k = -1;
             for (ItemStack pouchItem : contents) {
                 ++k;
                 if (k > max - 1) break;
 
                 if (pouchItem == null) {
-                    emptySlots.add(new Pair<>(data, k));
+                    emptySlots.add(new Pair<>(pouchInventory, k));
                     continue;
                 }
 
@@ -174,12 +186,13 @@ public class PouchItem extends CustomItem {
                     }
                 }
             }
+            pouchInventory.setContents(contents);
             data.setContents(contents); // not needed? maybe. is it for free? yes.
         }
 
         for (Iterator<ItemStack> i = remaining.iterator(); i.hasNext(); ) {
             ItemStack item = i.next();
-            Pair<PouchData, Integer> pair = emptySlots.stream().findFirst().orElse(null);
+            Pair<Inventory, Integer> pair = emptySlots.stream().findFirst().orElse(null);
 
             if (pair == null) return;
             ItemStack[] contents = pair.getLeft().getContents();
@@ -218,7 +231,8 @@ public class PouchItem extends CustomItem {
                 PouchData data = PouchData.getData(itemStack);
                 if (data == null) continue;
 
-                ItemStack[] contents = data.getContents();
+                Inventory pouchInventory = PouchData.getInventory(data.getId());
+                ItemStack[] contents = pouchInventory.getContents();
                 for (int i = 0; i < contents.length; ++i) {
                     ItemStack pouchItem = contents[i];
                     if (pouchItem == null) continue;
@@ -237,6 +251,7 @@ public class PouchItem extends CustomItem {
                     }
                 }
 
+                pouchInventory.setContents(contents);
                 data.setContents(contents);
             }
         }

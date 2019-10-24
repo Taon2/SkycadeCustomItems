@@ -78,6 +78,7 @@ public class PouchData {
         int id = ThreadLocalRandom.current().nextInt();
         ItemStack item = getItem(id);
         AsyncScheduler.runTask(SkycadeCustomItemsPlugin.getInstance(), () -> cache.getUnchecked(id).persist());
+
         return item;
     }
 
@@ -90,6 +91,10 @@ public class PouchData {
 
     public static Inventory getInventory(int id) {
         return inventories.get(id);
+    }
+
+    public static void addInventory(int id, Inventory inventory) {
+        inventories.put(id, inventory);
     }
 
     public static void loadData(ItemStack item) {
