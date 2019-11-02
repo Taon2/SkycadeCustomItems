@@ -24,7 +24,7 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
     public static final ConfigEntry<Integer> PROTECTION_ORB_DURATION = new ConfigEntry<>("prisons", "protection-orb-duration", 10);
 
     public ProtectionOrbItem() {
-        super("PROTECTION_ORB", ChatColor.DARK_AQUA + "Protection Orb", "Duration", getRawLore(), Material.MAGMA_CREAM);
+        super("PROTECTION_ORB", ChatColor.DARK_AQUA + "Protection Orb", "Duration", Material.MAGMA_CREAM);
         CoreSettings.getInstance().registerSetting(PROTECTION_ORB_DURATION);
     }
 
@@ -37,10 +37,10 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
             if (is == null) return;
 
             ItemMeta meta = is.getItemMeta();
-            meta.setLore(getLore());
+            meta.setLore(getRawLore());
             is.setItemMeta(meta);
 
-            setNum(is, getLore(), getCounted(), PROTECTION_ORB_DURATION.getValue());
+            setNum(is, is.getItemMeta().getLore(), getCounted(), PROTECTION_ORB_DURATION.getValue());
 
             InventoryUtil.giveItems(p, is);
         }
@@ -57,6 +57,10 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
         if (event.getPlayer() == null || !event.getPlayer().isSneaking()) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasLore() || !event.getItem().getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName() || !event.getItem().getItemMeta().getDisplayName().equals(getName())) return;
+        if (event.getItem().getAmount() > 1)  {
+            event.getPlayer().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            return;
+        }
 
         activeOrbs.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + (PROTECTION_ORB_DURATION.getValue()*60)*1000);
         event.getPlayer().sendMessage(ChatColor.GREEN + "Activated!");
@@ -141,12 +145,14 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
         }
     }
 
-    public static List<String> getRawLore() {
+    public List<String> getRawLore() {
         int random = ThreadLocalRandom.current().nextInt();
+        String makeUnstackable = Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR));
+        makeUnstackable = makeUnstackable.substring(0, makeUnstackable.length() - 1);
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Duration: " + ChatColor.WHITE + "%current% Minutes",
-                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
+                makeUnstackable,
                 ChatColor.GRAY + "Prevents you from attacking, and anyone from attacking you!",
                 "",
                 ChatColor.GRAY + "Use " + ChatColor.WHITE + "/entercombat" + ChatColor.GRAY + " to leave",

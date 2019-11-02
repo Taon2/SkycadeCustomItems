@@ -27,26 +27,22 @@ public class ProtectionListener implements Listener {
         //Turns items without lore into ones with lore
         CustomItemManager.getAllCustomItems().forEach((s, customItem) -> {
             if (clicked != null && clicked.hasItemMeta() && clicked.getItemMeta().hasDisplayName() && clicked.getItemMeta().getDisplayName().equals(customItem.getName())) {
-                if (clicked.getItemMeta().hasLore() && !clicked.getItemMeta().getLore().contains(CustomItemManager.MAGIC)) {
+                if (clicked.getItemMeta().hasLore()) {
                     int count = CustomItem.getCurrentNum(clicked, customItem.getCounted());
                     int max = CustomItem.getMaxNum(clicked, customItem.getCounted());
 
-                    List<String> lore = customItem.getLore();
-
-                    CustomItem.setNum(clicked, lore, customItem.getCounted(), count);
-                    CustomItem.setMaxNum(clicked, lore, max);
+                    CustomItem.setNum(clicked, customItem.getRawLore(), customItem.getCounted(), count);
+                    CustomItem.setMaxNum(clicked, clicked.getItemMeta().getLore(), max);
                 }
             }
 
             if (cursor != null && cursor.hasItemMeta() && cursor.getItemMeta().hasDisplayName() && cursor.getItemMeta().getDisplayName().equals(customItem.getName())) {
-                if (cursor.getItemMeta().hasLore() && !cursor.getItemMeta().getLore().contains(CustomItemManager.MAGIC)) {
+                if (cursor.getItemMeta().hasLore()) {
                     int count = CustomItem.getCurrentNum(cursor, customItem.getCounted());
                     int max = CustomItem.getMaxNum(cursor, customItem.getCounted());
 
-                    List<String> lore = customItem.getLore();
-
-                    CustomItem.setNum(cursor, lore, customItem.getCounted(), count);
-                    CustomItem.setMaxNum(cursor, lore, max);
+                    CustomItem.setNum(cursor, customItem.getRawLore(), customItem.getCounted(), count);
+                    CustomItem.setMaxNum(cursor, cursor.getItemMeta().getLore(), max);
                 }
             }
         });
@@ -86,5 +82,4 @@ public class ProtectionListener implements Listener {
                 event.setCancelled(true);
         }
     }
-
 }

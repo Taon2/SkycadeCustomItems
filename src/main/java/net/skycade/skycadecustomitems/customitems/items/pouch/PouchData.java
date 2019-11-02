@@ -94,6 +94,7 @@ public class PouchData {
     }
 
     public static void addInventory(int id, Inventory inventory) {
+        inventories.remove(id);
         inventories.put(id, inventory);
     }
 

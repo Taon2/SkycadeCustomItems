@@ -13,13 +13,11 @@ public abstract class CustomItem implements Listener {
 
     private final String handle;
     private final String name;
-    private final List<String> lore;
     private String counted = "None";
     private ItemStack item;
 
-    CustomItem(String handle, String name, List<String> lore, Material type) {
+    CustomItem(String handle, String name, Material type) {
         this.handle = handle;
-        this.lore = lore;
         this.name = name;
 
         ItemStack is = new ItemStack(type);
@@ -30,10 +28,9 @@ public abstract class CustomItem implements Listener {
         item = is.clone();
     }
 
-    CustomItem(String handle, String name, String counted, List<String> lore, Material type) {
+    CustomItem(String handle, String name, String counted, Material type) {
         this.handle = handle;
         this.counted = counted;
-        this.lore = lore;
         this.name = name;
 
         ItemStack is = new ItemStack(type);
@@ -63,7 +60,7 @@ public abstract class CustomItem implements Listener {
         return counted;
     }
 
-    ItemStack getItem() {
+    public ItemStack getItem() {
         if (item == null) {
             item = new ItemStack(Material.WOOD_SWORD);
         }
@@ -74,6 +71,8 @@ public abstract class CustomItem implements Listener {
     public abstract void giveItem(Player p, int amount);
 
     public abstract void giveItem(Player p, int duration, int amount);
+
+    public abstract List<String> getRawLore();
 
     public static int getCurrentNum(ItemStack item, String toGet) {
         int current = 0;
@@ -151,29 +150,4 @@ public abstract class CustomItem implements Listener {
 
         item.setItemMeta(meta);
     }
-
-    public List<String> getLore() {
-        return lore;
-    }
-
-    //Unused due to this setting the stack size for all items, not just custom ones.
-//    protected void setMaxStackSize(ItemStack original, net.minecraft.server.v1_8_R3.ItemStack nmsItem, int amount){
-//        try {
-//            Field field = net.minecraft.server.v1_8_R3.Item.class.getDeclaredField("maxStackSize");
-//            field.setAccessible(true);
-//            field.setInt(nmsItem.getItem(), amount);
-//        } catch (Exception ignored) {}
-//
-//        original.setItemMeta(org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.getItemMeta(nmsItem));
-//    }
-//
-//    protected void setMaxStackSize(ItemStack original, net.minecraft.server.v1_12_R1.ItemStack nmsItem, int amount){
-//        try {
-//            Field field = net.minecraft.server.v1_12_R1.Item.class.getDeclaredField("maxStackSize");
-//            field.setAccessible(true);
-//            field.setInt(nmsItem.getItem(), amount);
-//        } catch (Exception ignored) {}
-//
-//        original.setItemMeta(org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.getItemMeta(nmsItem));
-//    }
 }

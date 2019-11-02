@@ -1,7 +1,5 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
-import net.skycade.SkycadeCore.utility.ItemBuilder;
-import net.skycade.SkycadeEnchants.enchant.common.EnchantmentManager;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,30 +10,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static net.skycade.prisons.util.Messages.REPAIRED;
 
 public abstract class MendingScarabItem extends CustomItem {
-
-    protected static ItemStack mendingScarab;
-
-    static {
-        mendingScarab = new ItemBuilder(Material.EMERALD)
-                .setDisplayName(ChatColor.GREEN + "Mending Scarab")
-                .setLore(getRawLore())
-                .build();
-
-        Map<org.bukkit.enchantments.Enchantment, Integer> enchants = new HashMap<>();
-        enchants.put(org.bukkit.enchantments.Enchantment.DURABILITY, 1);
-        EnchantmentManager.getInstance().enchantUnsafe(mendingScarab, enchants);
-    }
-
     public MendingScarabItem() {
-        super("MENDING_SCARAB", ChatColor.GREEN + "Mending Scarab", getRawLore(), Material.EMERALD);
+        super("MENDING_SCARAB", ChatColor.GREEN + "Mending Scarab", Material.EMERALD);
     }
 
     private boolean matches(ItemStack item) {
@@ -50,7 +32,6 @@ public abstract class MendingScarabItem extends CustomItem {
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
-        int random = ThreadLocalRandom.current().nextInt();
         if (event.getCursor() == null || event.getCurrentItem() == null) return;
         ItemStack hoveredItem = event.getCursor();
         ItemStack clickedItem = event.getCurrentItem();
@@ -58,6 +39,11 @@ public abstract class MendingScarabItem extends CustomItem {
 
         short maxDurability = clickedItem.getType().getMaxDurability();
         if (maxDurability <= 0 || !matches(hoveredItem) || clickedItem.getDurability() <= 0) return;
+        if (hoveredItem.getAmount() > 1 || clickedItem.getAmount() > 1)  {
+            event.getWhoClicked().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            return;
+        }
+
 
         event.getWhoClicked().setItemOnCursor(null);
         clickedItem.setDurability((short) 0);
@@ -68,12 +54,14 @@ public abstract class MendingScarabItem extends CustomItem {
         REPAIRED.msg(event.getWhoClicked());
     }
 
-    public static List<String> getRawLore() {
+    public List<String> getRawLore() {
         int random = ThreadLocalRandom.current().nextInt();
+        String makeUnstackable = Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR));
+        makeUnstackable = makeUnstackable.substring(0, makeUnstackable.length() - 1);
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Fixes any damaged item you wish!",
-                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
+                makeUnstackable,
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Drag onto the item to use!"
         );
     }

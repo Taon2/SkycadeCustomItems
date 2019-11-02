@@ -39,6 +39,8 @@ public class SkycadeCustomItemsPlugin extends SkycadePlugin {
         setConfigDefaults(defaults);
         loadDefaultConfig();
 
+        Messages.init();
+
         new CustomItemManager(this);
     }
 

@@ -30,7 +30,7 @@ import static net.skycade.prisons.util.SpigotUtil.wrap;
 
 public class ExperienceBoosterItem extends CustomItem implements Listener {
     public ExperienceBoosterItem() {
-        super("EXPERIENCE_BOOSTER", ChatColor.BLUE + "Experience Booster", getRawLore(), Material.EYE_OF_ENDER);
+        super("EXPERIENCE_BOOSTER", ChatColor.BLUE + "Experience Booster", Material.EYE_OF_ENDER);
     }
 
     private String itemTable;
@@ -56,10 +56,10 @@ public class ExperienceBoosterItem extends CustomItem implements Listener {
             if (is == null) return;
 
             ItemMeta meta = is.getItemMeta();
-            meta.setLore(getLore());
+            meta.setLore(getRawLore());
             is.setItemMeta(meta);
 
-            setNum(is, getLore(), "Duration", duration);
+            setNum(is, is.getItemMeta().getLore(), "Duration", duration);
 
 
             InventoryUtil.giveItems(p, is);
@@ -74,6 +74,10 @@ public class ExperienceBoosterItem extends CustomItem implements Listener {
         if (event.getPlayer() == null || !event.getPlayer().isSneaking()) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasLore() || !event.getItem().getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName() || !event.getItem().getItemMeta().getDisplayName().equals(getName())) return;
+        if (event.getItem().getAmount() > 1)  {
+            event.getPlayer().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            return;
+        }
 
         activeExpBoost.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + (getCurrentNum(event.getItem(), "Duration")*60)*1000);
         event.getPlayer().sendMessage(ChatColor.GREEN + "Activated!");
@@ -144,12 +148,14 @@ public class ExperienceBoosterItem extends CustomItem implements Listener {
         }
     }
 
-    public static List<String> getRawLore() {
+    public List<String> getRawLore() {
         int random = ThreadLocalRandom.current().nextInt();
+        String makeUnstackable = Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR));
+        makeUnstackable = makeUnstackable.substring(0, makeUnstackable.length() - 1);
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Duration: " + ChatColor.WHITE + "%current% Minutes",
-                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
+                makeUnstackable,
                 ChatColor.GRAY + "Gain double experience while mining!",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Shift + Right Click to activate!"

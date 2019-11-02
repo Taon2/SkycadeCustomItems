@@ -44,10 +44,10 @@ import static net.skycade.prisons.util.Messages.TOO_MANY_POUCHES;
 
 public class PouchItem extends CustomItem {
     public PouchItem() {
-        super("POUCH", ChatColor.GOLD + "Pouch", "Tier", getRawLore(), Material.INK_SACK);
+        super("POUCH", ChatColor.GOLD + "Pouch", "Tier", Material.INK_SACK);
 
-        // in case there's no plugin this would fail and we all good
-        Bukkit.getPluginManager().registerEvents(new ShopListener(), SkycadeCustomItemsPlugin.getInstance());
+        Bukkit.getPluginManager().registerEvents(new ShopListener(), SkycadeCustomItemsPlugin.getInstance()); //Don't suicide if shop plugin is not loaded
+        Bukkit.getPluginManager().registerEvents(new BlockBreakFullInventoryListener(), SkycadeCustomItemsPlugin.getInstance()); //Don't suicide if prisons plugin is not loaded
     }
 
     @Override
@@ -56,12 +56,12 @@ public class PouchItem extends CustomItem {
             ItemStack is = PouchData.newPouch();
 
             ItemMeta meta = is.getItemMeta();
-            meta.setLore(getLore());
+            meta.setLore(getRawLore());
             is.setItemMeta(meta);
 
             PouchData data = new PouchData(PouchData.getPouchId(is));
             data.setLevel(1);
-            setNum(is, getLore(), getCounted(), data.getLevel());
+            setNum(is, is.getItemMeta().getLore(), getCounted(), data.getLevel());
 
             int size = 18 + data.getLevel() * 9;
             ItemStack[] contents = new ItemStack[size];
@@ -129,82 +129,6 @@ public class PouchItem extends CustomItem {
         PouchData.loadData(event.getCursor());
     }
 
-    //todo Bring this listener from prisons into here, pouches only work on prisons rn because its in prisons only
-
-    @EventHandler(ignoreCancelled = true)
-    public void onBlockBreakFullInventory(BlockBreakFullInventoryEvent event) {
-        List<ItemStack> remaining = event.getRemaining();
-
-        Player player = event.getPlayer();
-        PlayerInventory inventory = player.getInventory();
-
-        if (hasTooManyPouches(event.getPlayer())) {
-            TOO_MANY_POUCHES.msg(event.getPlayer());
-            return;
-        }
-
-        int pouchCount = 0;
-
-        List<Pair<Inventory, Integer>> emptySlots = new ArrayList<>();
-
-        for (ItemStack itemStack : inventory.getContents()) {
-            PouchData data = PouchData.getData(itemStack);
-            if (data == null) continue;
-            ++pouchCount;
-
-            if (pouchCount > 2) break;
-
-            int max = Math.min(18 + (data.getLevel() * 9), 54);
-
-            Inventory pouchInventory = PouchData.getInventory(data.getId());
-            ItemStack[] contents = pouchInventory.getContents();
-            int k = -1;
-            for (ItemStack pouchItem : contents) {
-                ++k;
-                if (k > max - 1) break;
-
-                if (pouchItem == null) {
-                    emptySlots.add(new Pair<>(pouchInventory, k));
-                    continue;
-                }
-
-                Iterator<ItemStack> i = remaining.iterator();
-
-                while (i.hasNext()) {
-                    ItemStack remainingItem = i.next();
-
-                    if (remainingItem.isSimilar(pouchItem)) {
-                        int maxAdd = pouchItem.getMaxStackSize() - pouchItem.getAmount();
-
-                        if (remainingItem.getAmount() > maxAdd) {
-                            remainingItem.setAmount(remainingItem.getAmount() - maxAdd);
-                            pouchItem.setAmount(pouchItem.getMaxStackSize());
-                        } else {
-                            pouchItem.setAmount(pouchItem.getAmount() + remainingItem.getAmount());
-                            i.remove();
-                        }
-                    }
-                }
-            }
-            pouchInventory.setContents(contents);
-            data.setContents(contents); // not needed? maybe. is it for free? yes.
-        }
-
-        for (Iterator<ItemStack> i = remaining.iterator(); i.hasNext(); ) {
-            ItemStack item = i.next();
-            Pair<Inventory, Integer> pair = emptySlots.stream().findFirst().orElse(null);
-
-            if (pair == null) return;
-            ItemStack[] contents = pair.getLeft().getContents();
-
-            contents[pair.getRight()] = item;
-            pair.getLeft().setContents(contents);
-
-            emptySlots.remove(0);
-            i.remove();
-        }
-    }
-
     @EventHandler(ignoreCancelled = true)
     public void onSheepColoring(PlayerInteractEntityEvent event) {
         boolean isSheep = (event.getRightClicked().getType() != null && event.getRightClicked().getType() == EntityType.SHEEP);
@@ -214,6 +138,83 @@ public class PouchItem extends CustomItem {
         if (isSheep && isPouch) {
             event.setCancelled(true);
             event.getPlayer().updateInventory();
+        }
+    }
+
+    public class BlockBreakFullInventoryListener implements Listener {
+
+        @EventHandler(ignoreCancelled = true)
+        public void onBlockBreakFullInventory(BlockBreakFullInventoryEvent event) {
+            List<ItemStack> remaining = event.getRemaining();
+
+            Player player = event.getPlayer();
+            PlayerInventory inventory = player.getInventory();
+
+            if (hasTooManyPouches(event.getPlayer())) {
+                TOO_MANY_POUCHES.msg(event.getPlayer());
+                return;
+            }
+
+            int pouchCount = 0;
+
+            List<Pair<Inventory, Integer>> emptySlots = new ArrayList<>();
+
+            for (ItemStack itemStack : inventory.getContents()) {
+                PouchData data = PouchData.getData(itemStack);
+                if (data == null) continue;
+                ++pouchCount;
+
+                if (pouchCount > 2) break;
+
+                int max = Math.min(18 + (data.getLevel() * 9), 54);
+
+                Inventory pouchInventory = PouchData.getInventory(data.getId());
+                ItemStack[] contents = pouchInventory.getContents();
+                int k = -1;
+                for (ItemStack pouchItem : contents) {
+                    ++k;
+                    if (k > max - 1) break;
+
+                    if (pouchItem == null) {
+                        emptySlots.add(new Pair<>(pouchInventory, k));
+                        continue;
+                    }
+
+                    Iterator<ItemStack> i = remaining.iterator();
+
+                    while (i.hasNext()) {
+                        ItemStack remainingItem = i.next();
+
+                        if (remainingItem.isSimilar(pouchItem)) {
+                            int maxAdd = pouchItem.getMaxStackSize() - pouchItem.getAmount();
+
+                            if (remainingItem.getAmount() > maxAdd) {
+                                remainingItem.setAmount(remainingItem.getAmount() - maxAdd);
+                                pouchItem.setAmount(pouchItem.getMaxStackSize());
+                            } else {
+                                pouchItem.setAmount(pouchItem.getAmount() + remainingItem.getAmount());
+                                i.remove();
+                            }
+                        }
+                    }
+                }
+                pouchInventory.setContents(contents);
+                data.setContents(contents); // not needed? maybe. is it for free? yes.
+            }
+
+            for (Iterator<ItemStack> i = remaining.iterator(); i.hasNext(); ) {
+                ItemStack item = i.next();
+                Pair<Inventory, Integer> pair = emptySlots.stream().findFirst().orElse(null);
+
+                if (pair == null) return;
+                ItemStack[] contents = pair.getLeft().getContents();
+
+                contents[pair.getRight()] = item;
+                pair.getLeft().setContents(contents);
+
+                emptySlots.remove(0);
+                i.remove();
+            }
         }
     }
 
@@ -279,7 +280,8 @@ public class PouchItem extends CustomItem {
                 PouchData data = PouchData.getData(itemStack);
                 if (data == null) continue;
 
-                ItemStack[] contents = data.getContents();
+                Inventory pouchInventory = PouchData.getInventory(data.getId());
+                ItemStack[] contents = pouchInventory.getContents();
                 for (int i = 0; i < contents.length; i++) {
                     if (amount == 0) break;
                     ItemStack pouchItem = contents[i];
@@ -295,6 +297,7 @@ public class PouchItem extends CustomItem {
                     }
                 }
 
+                pouchInventory.setContents(contents);
                 data.setContents(contents);
             }
 
@@ -322,7 +325,7 @@ public class PouchItem extends CustomItem {
         return numPouches >= 3;
     }
 
-    public static List<String> getRawLore() {
+    public List<String> getRawLore() {
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Tier: " + ChatColor.WHITE + "%current%",

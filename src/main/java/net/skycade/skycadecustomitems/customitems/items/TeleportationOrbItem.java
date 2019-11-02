@@ -27,7 +27,7 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
     public static final ConfigEntry<Integer> TELEPORTATION_ORB_USES = new ConfigEntry<>("prisons", "teleportation-orb-uses", 10);
 
     public TeleportationOrbItem() {
-        super("TELEPORTATION_ORB", ChatColor.DARK_AQUA + "Teleportation Orb", "Uses", getRawLore(), Material.SLIME_BALL);
+        super("TELEPORTATION_ORB", ChatColor.DARK_AQUA + "Teleportation Orb", "Uses", Material.SLIME_BALL);
         CoreSettings.getInstance().registerSetting(TELEPORTATION_ORB_USES);
     }
 
@@ -43,10 +43,10 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
             if (is == null) return;
 
             ItemMeta meta = is.getItemMeta();
-            meta.setLore(getLore());
+            meta.setLore(getRawLore());
             is.setItemMeta(meta);
 
-            setNum(is, getLore(), getCounted(), TELEPORTATION_ORB_USES.getValue());
+            setNum(is, is.getItemMeta().getLore(), getCounted(), TELEPORTATION_ORB_USES.getValue());
 
             InventoryUtil.giveItems(p, is);
         }
@@ -65,13 +65,17 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
         if (player == null || !player.isSneaking()) return;
         if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasLore() || !item.getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName() || !item.getItemMeta().getDisplayName().equals(getName())) return;
+        if (event.getItem().getAmount() > 1)  {
+            event.getPlayer().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            return;
+        }
 
         if (getCurrentNum(item, getCounted()) > 0) {
             for (Mine mine : PrisonMines.getInstance().getMines()) {
                 if (mine.isInMine(wrap(player.getLocation()))) {
                     mine.getSpawn().ifPresent(s -> player.teleport(unwrap(s)));
 
-                    setNum(item, getLore(), getCounted(), getCurrentNum(item, getCounted()) - 1);
+                    setNum(item, item.getItemMeta().getLore(), getCounted(), getCurrentNum(item, getCounted()) - 1);
                     event.getPlayer().sendMessage(ChatColor.GREEN + "Poof!");
 
                     if (getCurrentNum(item, getCounted()) <= 0) {
@@ -84,18 +88,19 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
 
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "You are not in a valid mine!");
-            return;
         } else {
             event.getPlayer().getInventory().removeItem(item);
         }
     }
 
-    public static List<String> getRawLore() {
+    public List<String> getRawLore() {
         int random = ThreadLocalRandom.current().nextInt();
+        String makeUnstackable = Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR));
+        makeUnstackable = makeUnstackable.substring(0, makeUnstackable.length() - 1);
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Uses: " + ChatColor.WHITE + "%current%",
-                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
+                makeUnstackable,
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Teleports you to the beginning of the mine you are in!",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Shift + Right Click to use!"

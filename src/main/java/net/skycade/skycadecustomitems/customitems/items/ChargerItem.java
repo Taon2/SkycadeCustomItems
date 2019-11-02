@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ChargerItem extends CustomItem implements Listener {
     public ChargerItem() {
-        super("CHARGER", ChatColor.RED + "Charger", "Charges", getRawLore(), Material.FIREBALL);
+        super("CHARGER", ChatColor.RED + "Charger", "Charges", Material.FIREBALL);
     }
 
     @Override
@@ -31,10 +31,10 @@ public class ChargerItem extends CustomItem implements Listener {
             if (is == null) return;
 
             ItemMeta meta = is.getItemMeta();
-            meta.setLore(getLore());
+            meta.setLore(getRawLore());
             is.setItemMeta(meta);
 
-            setNum(is, getLore(), getCounted(), ThreadLocalRandom.current().nextInt(5, 26));
+            setNum(is, is.getItemMeta().getLore(), getCounted(), ThreadLocalRandom.current().nextInt(5, 26));
 
             InventoryUtil.giveItems(p, is);
         }
@@ -62,6 +62,13 @@ public class ChargerItem extends CustomItem implements Listener {
         if (hoveredItem.getType() == null || hoveredItem.getType() == Material.AIR || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasLore() || !hoveredItem.getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (hoveredItem.getType() == null || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasDisplayName() || !hoveredItem.getItemMeta().getDisplayName().equals(getName())) return;
         if (clickedItem.getType() == null || clickedItem.getType() == Material.AIR || !clickedItem.hasItemMeta() || !clickedItem.getItemMeta().hasDisplayName() || !clickedItem.getItemMeta().getDisplayName().equals(CustomItemManager.getAllCustomItems().get("LEGENDARY_VIAL").getName())) return;
+        if (hoveredItem.getAmount() > 1 || clickedItem.getAmount() > 1)  {
+            event.getWhoClicked().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            return;
+        }
+
+        CustomItem item = CustomItemManager.getTypeFromString("LEGENDARY_VIAL");
+        if (item == null) return;
 
         int addedCharges = getCurrentNum(hoveredItem, getCounted());
         int currentCharges = getCurrentNum(clickedItem, getCounted());
@@ -70,11 +77,13 @@ public class ChargerItem extends CustomItem implements Listener {
         if (currentCharges == maxCharges) {
             event.getWhoClicked().sendMessage(ChatColor.RED + "That item is already fully charged!");
         } else if (maxCharges != -1 && currentCharges + addedCharges > maxCharges) {
-            setNum(clickedItem, LegendaryVialItem.getRawLore(), getCounted(), maxCharges);
+            setNum(clickedItem, item.getRawLore(), getCounted(), maxCharges);
+            setMaxNum(clickedItem, clickedItem.getItemMeta().getLore(), maxCharges);
             event.getWhoClicked().setItemOnCursor(null);
             ((Player) event.getWhoClicked()).updateInventory();
         } else {
-            setNum(clickedItem, LegendaryVialItem.getRawLore(), getCounted(), (currentCharges + addedCharges));
+            setNum(clickedItem, item.getRawLore(), getCounted(), (currentCharges + addedCharges));
+            setMaxNum(clickedItem, clickedItem.getItemMeta().getLore(), maxCharges);
             event.getWhoClicked().setItemOnCursor(null);
             ((Player) event.getWhoClicked()).updateInventory();
         }
@@ -82,12 +91,14 @@ public class ChargerItem extends CustomItem implements Listener {
         event.setCancelled(true);
     }
 
-    public static List<String> getRawLore() {
+    public List<String> getRawLore() {
         int random = ThreadLocalRandom.current().nextInt();
+        String makeUnstackable = Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR));
+        makeUnstackable = makeUnstackable.substring(0, makeUnstackable.length() - 1);
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Charges: " + ChatColor.WHITE + "%current%",
-                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
+                makeUnstackable,
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Chargers are required to use Legendary Vials!",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Click onto a Legendary Vial to charge it!"

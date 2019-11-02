@@ -23,7 +23,7 @@ import java.util.function.BiConsumer;
 
 public class RenameTagItem extends CustomItem implements Listener {
     public RenameTagItem() {
-        super("RENAME_TAG", ChatColor.DARK_PURPLE + "Rename Tag", getRawLore(), Material.NAME_TAG);
+        super("RENAME_TAG", ChatColor.DARK_PURPLE + "Rename Tag", Material.NAME_TAG);
     }
 
     private static Map<UUID, BiConsumer<Player, String>> listenForInput = new HashMap<>();
@@ -35,7 +35,7 @@ public class RenameTagItem extends CustomItem implements Listener {
             if (is == null) return;
 
             ItemMeta meta = is.getItemMeta();
-            meta.setLore(getLore());
+            meta.setLore(getRawLore());
             is.setItemMeta(meta);
 
             InventoryUtil.giveItems(p, is);
@@ -57,6 +57,10 @@ public class RenameTagItem extends CustomItem implements Listener {
         if (hoveredItem == null || hoveredItem.getType() == Material.AIR || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasLore() || !hoveredItem.getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (hoveredItem == null || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasDisplayName() || !hoveredItem.getItemMeta().getDisplayName().equals(getName())) return;
         if (clickedItem == null || clickedItem.getType() == Material.AIR || (clickedItem.hasItemMeta() && clickedItem.getItemMeta().hasLore() && clickedItem.getItemMeta().getLore().contains(CustomItemManager.MAGIC))) return;
+        if (hoveredItem.getAmount() > 1 || clickedItem.getAmount() > 1)  {
+            event.getWhoClicked().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            return;
+        }
 
         //Removes tag
         event.setCancelled(true);
@@ -124,12 +128,14 @@ public class RenameTagItem extends CustomItem implements Listener {
         }
     }
 
-    public static List<String> getRawLore() {
+    public List<String> getRawLore() {
         int random = ThreadLocalRandom.current().nextInt();
+        String makeUnstackable = Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR));
+        makeUnstackable = makeUnstackable.substring(0, makeUnstackable.length() - 1);
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Allows you to rename an item with colors.",
-                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
+                makeUnstackable,
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Click onto an item to rename it!"
         );
     }

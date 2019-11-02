@@ -5,6 +5,7 @@ import net.skycade.SkycadeEnchants.enchant.common.Enchantment;
 import net.skycade.SkycadeEnchants.enchant.common.EnchantmentManager;
 import net.skycade.prisons.util.EnchantmentTypes;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -15,6 +16,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +24,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class LegendaryVialItem extends CustomItem implements Listener {
     public LegendaryVialItem() {
-        super("LEGENDARY_VIAL", ChatColor.GOLD + "Legendary Enchantment Vial", "Charges", getRawLore(), Material.ENCHANTMENT_TABLE);
+        super("LEGENDARY_VIAL", ChatColor.GOLD + "Legendary Enchantment Vial", "Charges", Material.ENCHANTMENT_TABLE);
     }
 
     @Override
@@ -32,11 +34,11 @@ public class LegendaryVialItem extends CustomItem implements Listener {
             if (is == null) return;
 
             ItemMeta meta = is.getItemMeta();
-            meta.setLore(getLore());
+            meta.setLore(getRawLore());
             is.setItemMeta(meta);
 
             setMaxNum(is, is.getItemMeta().getLore(), 100);
-            setNum(is, getLore(), getCounted(), 0);
+            setNum(is, is.getItemMeta().getLore(), getCounted(), 0);
 
             InventoryUtil.giveItems(p, is);
         }
@@ -53,6 +55,10 @@ public class LegendaryVialItem extends CustomItem implements Listener {
         if (event.getPlayer() == null || !event.getPlayer().isSneaking()) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasLore() || !event.getItem().getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName() || !event.getItem().getItemMeta().getDisplayName().equals(getName())) return;
+        if (event.getItem().getAmount() > 1)  {
+            event.getPlayer().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            return;
+        }
 
         if (getCurrentNum(event.getItem(), getCounted()) >= getMaxNum(event.getItem(), getCounted())) {
             Enchantment enchantment = (Enchantment) EnchantmentManager.getInstance().getEnchantmentByName(EnchantmentTypes.getLegendary().get(ThreadLocalRandom.current().nextInt(0, EnchantmentTypes.getLegendary().size())));
@@ -70,12 +76,14 @@ public class LegendaryVialItem extends CustomItem implements Listener {
         event.setCancelled(true);
     }
 
-    static List<String> getRawLore() {
+    public List<String> getRawLore() {
         int random = ThreadLocalRandom.current().nextInt();
+        String makeUnstackable = Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR));
+        makeUnstackable = makeUnstackable.substring(0, makeUnstackable.length() - 1);
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Charges: " + ChatColor.WHITE + "%current%/%max%",
-                Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR)),
+                makeUnstackable,
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Awards you with one Legendary enchantment book!",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Shift + Right Click to use!"
