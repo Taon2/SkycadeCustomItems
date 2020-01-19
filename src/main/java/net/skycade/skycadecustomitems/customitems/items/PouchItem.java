@@ -24,8 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -34,6 +33,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,6 +110,44 @@ public class PouchItem extends CustomItem {
         }
 
         event.getPlayer().openInventory(PouchData.getInventory(data.getId()));
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onPlayerClickItem(InventoryClickEvent event) {
+        PouchData pouchData;
+
+        /* only one of these will be called, so it's okay in this format */
+        if (!event.getCursor().getType().equals(Material.AIR)) {
+            pouchData = PouchData.getData(event.getCursor());
+
+            if (pouchData == null)
+                return;
+
+            // if the player is moving the pouch into itself
+            if (event.getClickedInventory().equals(PouchData.getInventory(pouchData.getId()))) {
+                Bukkit.getConsoleSender().sendMessage("000");
+                // nope! can't do that
+                event.setCancelled(true);
+            }
+        }
+        if (!event.getCurrentItem().getType().equals(Material.AIR)) {
+            pouchData = PouchData.getData(event.getCurrentItem());
+
+            if (pouchData == null)
+                return;
+
+            // if the player is moving the pouch into itself
+            if (event.getInventory().equals(PouchData.getInventory(pouchData.getId()))) {
+                Bukkit.getConsoleSender().sendMessage("000");
+                // nope! can't do that
+                event.setCancelled(true);
+            }
+        }
+        if (event.getClick().equals(ClickType.NUMBER_KEY)) {
+            if (event.getInventory().getName().contains("Pouch") || event.getClickedInventory().getName().contains("Pouch")) { // need to substitute with name, no way to check item with this
+                event.setCancelled(true); // it will block all items from being used with num key, but that's fine
+            }
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
