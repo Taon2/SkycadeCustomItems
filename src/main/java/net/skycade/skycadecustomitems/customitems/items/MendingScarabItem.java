@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static net.skycade.prisons.util.Messages.REPAIRED;
+import static net.skycade.skycadecustomitems.Messages.REPAIRED;
 
 public abstract class MendingScarabItem extends CustomItem {
     public MendingScarabItem() {
