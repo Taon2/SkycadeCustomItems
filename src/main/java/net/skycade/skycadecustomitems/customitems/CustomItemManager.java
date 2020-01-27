@@ -26,7 +26,7 @@ public class CustomItemManager {
         registerCustomItems();
     }
 
-    private void registerCustomItems(){
+    private void registerCustomItems() {
         registerCustomItem(new LegendaryVialItem());
         registerCustomItem(new ChargerItem());
         registerCustomItem(new RenameTagItem());
@@ -35,6 +35,7 @@ public class CustomItemManager {
         registerCustomItem(new ProtectionOrbItem());
         registerCustomItem(new PouchItem());
         registerCustomItem(new PouchUpgraderItem());
+        registerCustomItem(new TNTWandItem());
         if (SkycadeCustomItemsPlugin.v18) {
             registerCustomItem(new MendingScarabItem1_8());
         } else {

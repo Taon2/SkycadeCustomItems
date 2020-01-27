@@ -12,6 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -128,6 +129,9 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
 
             //Stops damage from both parties if one of them has the orb active
             if (activeOrbs.containsKey(event.getEntity().getUniqueId()) || activeOrbs.containsKey(event.getDamager().getUniqueId())) {
+                if (event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
+                    event.getEntity().remove();
+                }
                 event.setCancelled(true);
             }
         }
