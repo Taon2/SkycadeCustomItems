@@ -1,20 +1,16 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
-import net.skycade.SkycadeCore.ConfigEntry;
-import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +19,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static net.skycade.skycadecustomitems.Messages.TNTWAND_CRAFTED_TNT;
 
@@ -66,7 +61,6 @@ public class TNTWandItem extends CustomItem implements Listener {
 
         if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName() || !item.getItemMeta().getDisplayName().equals(getName()))
             return;
-
 
         Block clickedBlock = event.getClickedBlock();
         if (!clickedBlock.getType().equals(Material.CHEST)) return; // not a chest, return
@@ -125,7 +119,11 @@ public class TNTWandItem extends CustomItem implements Listener {
         // done!
 
         // now decrement the uses by one
-        setNum(item, item.getItemMeta().getLore(), getCounted(), getCurrentNum(item, getCounted()) - 1);
+        int currentCharges = getCurrentNum(item, getCounted());
+        int maxCharges = getMaxNum(item, getCounted());
+
+        setNum(item, getRawLore(), getCounted(), currentCharges - 1);
+        setMaxNum(item, item.getItemMeta().getLore(), maxCharges);
 
         if (getCurrentNum(item, getCounted()) <= 0) {
             event.getPlayer().getInventory().removeItem(item);
