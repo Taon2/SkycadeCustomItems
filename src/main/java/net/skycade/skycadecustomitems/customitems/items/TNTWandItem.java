@@ -28,7 +28,7 @@ public class TNTWandItem extends CustomItem implements Listener {
     private static final int SAND_AMOUNT = 4;
 
     public TNTWandItem() {
-        super("TNTWAND", ChatColor.RED + "TNT Wand", "Uses", Material.STICK);
+        super("TNT_WAND", ChatColor.RED + "TNT Wand", "Uses", Material.STICK);
     }
 
     @Override
