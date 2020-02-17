@@ -24,7 +24,8 @@ import static net.skycade.skycadecustomitems.Messages.TNTWAND_CRAFTED_TNT;
 
 public class TNTWandItem extends CustomItem implements Listener {
 
-    private static final int GUNPOWDER_AMOUNT = 5;
+    // recipe (if changes are needed later)
+    private static final int GUNPOWDER_AMOUNT = 9;
     private static final int SAND_AMOUNT = 4;
 
     public TNTWandItem() {
