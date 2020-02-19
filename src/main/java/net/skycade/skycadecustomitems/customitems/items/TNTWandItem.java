@@ -26,7 +26,7 @@ public class TNTWandItem extends CustomItem implements Listener {
 
     // recipe (if changes are needed later)
     private static final int GUNPOWDER_AMOUNT = 9;
-    private static final int SAND_AMOUNT = 4;
+    private static final int SAND_AMOUNT = 0;
 
     public TNTWandItem() {
         super("TNT_WAND", ChatColor.RED + "TNT Wand", "Uses", Material.STICK);
@@ -142,7 +142,7 @@ public class TNTWandItem extends CustomItem implements Listener {
                 CustomItemManager.MAGIC,
                 ChatColor.AQUA + "Uses: " + ChatColor.WHITE + "%current%/%max%",
                 makeUnstackable,
-                ChatColor.GRAY + "" + ChatColor.ITALIC + "Craft your materials into TNT!",
+                ChatColor.GRAY + "" + ChatColor.ITALIC + "Craft 9 gunpowder into TNT!",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Shift + Click onto a chest to craft your TNT!"
         );
