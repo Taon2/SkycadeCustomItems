@@ -91,12 +91,8 @@ public class TNTWandItem extends CustomItem implements Listener {
             }
         }
 
-
-        int maxTntWithSand = availableSand / SAND_AMOUNT; // we expect integer division. You can't have a partial TNT item
-        int maxTntWithGunpowder = availableGunpowder / GUNPOWDER_AMOUNT; // we expect integer division. You can't have a partial TNT item
-
         // gets the highest amount of tnt that can be made with the available resources
-        int maxTnt = Math.min(maxTntWithGunpowder, maxTntWithSand);
+        int maxTnt = availableGunpowder / GUNPOWDER_AMOUNT; // we expect integer division. You can't have a partial TNT item
 
         // DOES THE CHEST HAVE ENOUGH ROOM FOR THE ITEMS?
         int maxAvailableSlots = chestInv.getMaxStackSize() - chestInv.getContents().length;
