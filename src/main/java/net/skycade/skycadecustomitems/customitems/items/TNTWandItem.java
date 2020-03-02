@@ -64,7 +64,7 @@ public class TNTWandItem extends CustomItem implements Listener {
             return;
 
         Block clickedBlock = event.getClickedBlock();
-        if (!clickedBlock.getType().equals(Material.CHEST)) return; // not a chest, return
+        if (!clickedBlock.getType().equals(Material.CHEST) && !clickedBlock.getType().equals(Material.TRAPPED_CHEST)) return; // not a chest or trapped chest, return
 
         Inventory chestInv = ((Chest) clickedBlock.getState()).getInventory();
 
