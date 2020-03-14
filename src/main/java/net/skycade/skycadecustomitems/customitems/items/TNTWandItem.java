@@ -1,5 +1,7 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
+import com.massivecraft.factions.FPlayer;
+import com.massivecraft.factions.FPlayers;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
@@ -57,6 +59,9 @@ public class TNTWandItem extends CustomItem implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
+        FPlayer factionPlayer = FPlayers.getInstance().getByPlayer(event.getPlayer()); // faction player
+
+        boolean playerIsInFaction = factionPlayer.hasFaction() && factionPlayer.getFaction() != null; // is the player in a faction
 
         if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || !event.getPlayer().isSneaking()) return;
 
@@ -64,7 +69,8 @@ public class TNTWandItem extends CustomItem implements Listener {
             return;
 
         Block clickedBlock = event.getClickedBlock();
-        if (!clickedBlock.getType().equals(Material.CHEST) && !clickedBlock.getType().equals(Material.TRAPPED_CHEST)) return; // not a chest or trapped chest, return
+        if (!clickedBlock.getType().equals(Material.CHEST) && !clickedBlock.getType().equals(Material.TRAPPED_CHEST))
+            return; // not a chest or trapped chest, return
 
         Inventory chestInv = ((Chest) clickedBlock.getState()).getInventory();
 
@@ -95,24 +101,34 @@ public class TNTWandItem extends CustomItem implements Listener {
         int maxTnt = availableGunpowder / GUNPOWDER_AMOUNT; // we expect integer division. You can't have a partial TNT item
 
         // DOES THE CHEST HAVE ENOUGH ROOM FOR THE ITEMS?
-        int maxAvailableSlots = chestInv.getMaxStackSize() - chestInv.getContents().length;
 
-        if (((maxTnt / 64) + 1) > maxAvailableSlots) {
-            // return / cancel ---> NOT ENOUGH ROOM
-            return;
+        if (!playerIsInFaction) { // player isn't in a faction, so we DO have to take into account chest space because there is no bank to put TNT in, so it's going in the chest
+            int maxAvailableSlots = chestInv.getMaxStackSize() - chestInv.getContents().length;
+
+            if (((maxTnt / 64) + 1) > maxAvailableSlots) {
+                // return / cancel ---> NOT ENOUGH ROOM
+                return;
+            }
         }
 
-        // enough room! Now we will remove the items that are creating our TNT
+        // --- should either be enough room in the chest, or the player has a faction bank. Now we will remove the items that are creating our TNT ---
 
         // SAND
         removeItems(chestInv, new ItemStack(Material.SAND), maxTnt * SAND_AMOUNT);
         // GUNPOWDER
         removeItems(chestInv, new ItemStack(Material.SULPHUR), maxTnt * GUNPOWDER_AMOUNT);
 
-        // add the TNT to the chest
-        for (int i = 0; i < maxTnt; i++) {
-            chestInv.addItem(new ItemStack(Material.TNT));
+        /* Try to add TNT to Faction TNT Bank */
+        if (!playerIsInFaction) { // if the player is *not* in a faction, fill the crafting chest with the TNT
+            // add the TNT to the chest
+            for (int i = 0; i < maxTnt; i++) {
+                chestInv.addItem(new ItemStack(Material.TNT));
+            }
+        } else { // player IS in faction, so add to bank
+            // add to faction TNT bank
+            factionPlayer.getFaction().setTnt(factionPlayer.getFaction().getTnt() + maxTnt);
         }
+
         // done!
 
         // now decrement the uses by one

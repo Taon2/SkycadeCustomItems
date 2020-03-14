@@ -35,7 +35,12 @@ public class CustomItemManager {
         registerCustomItem(new ProtectionOrbItem());
         registerCustomItem(new PouchItem());
         registerCustomItem(new PouchUpgraderItem());
-        registerCustomItem(new TNTWandItem());
+
+        // only register tnt wand if factions is enabled, because TNTWands rely on factions
+        if (Bukkit.getPluginManager().getPlugin("Factions") != null) {
+            registerCustomItem(new TNTWandItem());
+        }
+
         if (SkycadeCustomItemsPlugin.v18) {
             registerCustomItem(new MendingScarabItem1_8());
         } else {
