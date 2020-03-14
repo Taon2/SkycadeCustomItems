@@ -35,6 +35,8 @@ public class CustomItemManager {
         registerCustomItem(new ProtectionOrbItem());
         registerCustomItem(new PouchItem());
         registerCustomItem(new PouchUpgraderItem());
+        registerCustomItem(new GodCreeperEggItem());
+        registerCustomItem(new ThrowableCreeperEggItem());
 
         // only register tnt wand if factions is enabled, because TNTWands rely on factions
         if (Bukkit.getPluginManager().getPlugin("Factions") != null) {
