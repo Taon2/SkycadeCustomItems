@@ -55,7 +55,7 @@ public class RenameTagItem extends CustomItem implements Listener {
 
         if (event.getWhoClicked().getType() != EntityType.PLAYER) return;
         if (hoveredItem == null || hoveredItem.getType() == Material.AIR || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasLore() || !hoveredItem.getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
-        if (hoveredItem == null || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasDisplayName() || !hoveredItem.getItemMeta().getDisplayName().equals(getName())) return;
+        if (!hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasDisplayName() || !hoveredItem.getItemMeta().getDisplayName().equals(getName())) return;
         if (clickedItem == null || clickedItem.getType() == Material.AIR || (clickedItem.hasItemMeta() && clickedItem.getItemMeta().hasLore() && clickedItem.getItemMeta().getLore().contains(CustomItemManager.MAGIC))) return;
         if (hoveredItem.getAmount() > 1 || clickedItem.getAmount() > 1)  {
             event.getWhoClicked().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
@@ -102,7 +102,7 @@ public class RenameTagItem extends CustomItem implements Listener {
         listenForInput.put(uuid, consumer);
     }
 
-    @EventHandler
+    @EventHandler (ignoreCancelled = true)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         handleInput(event, event.getPlayer(), event.getMessage());
     }
