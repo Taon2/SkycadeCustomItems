@@ -19,6 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static net.skycade.skycadecustomitems.Messages.ONLY_ONE_ALLOWED;
+
 public class ChargerItem extends CustomItem implements Listener {
     public ChargerItem() {
         super("CHARGER", ChatColor.RED + "Charger", "Charges", Material.FIREBALL);
@@ -63,7 +65,7 @@ public class ChargerItem extends CustomItem implements Listener {
         if (hoveredItem.getType() == null || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasDisplayName() || !hoveredItem.getItemMeta().getDisplayName().equals(getName())) return;
         if (clickedItem.getType() == null || clickedItem.getType() == Material.AIR || !clickedItem.hasItemMeta() || !clickedItem.getItemMeta().hasDisplayName() || !clickedItem.getItemMeta().getDisplayName().equals(CustomItemManager.getAllCustomItems().get("LEGENDARY_VIAL").getName())) return;
         if (hoveredItem.getAmount() > 1 || clickedItem.getAmount() > 1)  {
-            event.getWhoClicked().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            ONLY_ONE_ALLOWED.msg(event.getWhoClicked());
             return;
         }
 

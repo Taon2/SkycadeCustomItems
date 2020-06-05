@@ -1,5 +1,6 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
+import net.skycade.SkycadeCombat.data.CombatData;
 import net.skycade.SkycadeCore.utility.AsyncScheduler;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.prisons.util.Pair;
@@ -24,7 +25,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -33,7 +36,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +43,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import static net.skycade.prisons.util.Messages.TOO_MANY_POUCHES;
+import static net.skycade.skycadecustomitems.Messages.IN_COMBAT;
 
 public class PouchItem extends CustomItem {
     public PouchItem() {
@@ -109,6 +112,13 @@ public class PouchItem extends CustomItem {
             return;
         }
 
+        // Disallow if in combat
+        CombatData.Combat combat = CombatData.getCombat(event.getPlayer());
+        if (combat != null && combat.isInCombat()) {
+            IN_COMBAT.msg(event.getPlayer());
+            return;
+        }
+
         event.getPlayer().openInventory(PouchData.getInventory(data.getId()));
     }
 
@@ -130,7 +140,7 @@ public class PouchItem extends CustomItem {
                 event.setCancelled(true);
             }
         }
-        if (!event.getCurrentItem().getType().equals(Material.AIR)) {
+        if (event.getCurrentItem() != null && !event.getCurrentItem().getType().equals(Material.AIR)) {
             pouchData = PouchData.getData(event.getCurrentItem());
 
             if (pouchData == null)

@@ -77,7 +77,15 @@
             <scope>system</scope>
             <systemPath>${basedir}/dependencies/SkycadeShop-1.3.4-SNAPSHOT.jar</systemPath>
         </dependency>
-        <!--CraftBukkit1.8-->
+        <!--SkycadeCombat-->
+        <dependency>
+            <groupId>net.skycade</groupId>
+            <artifactId>SkycadeCombat</artifactId>
+            <version>1.5.8-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/dependencies/SkycadeCombat-1.5.8-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <!--CraftBukkit 1.8.8-->
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit1.8</artifactId>
