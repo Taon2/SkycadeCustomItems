@@ -1,6 +1,7 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
 import com.google.common.eventbus.Subscribe;
+import net.skycade.SkycadeCombat.data.CombatData;
 import net.skycade.SkycadeCore.ConfigEntry;
 import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
@@ -22,6 +23,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static net.skycade.prisons.util.SpigotUtil.unwrap;
 import static net.skycade.prisons.util.SpigotUtil.wrap;
+import static net.skycade.skycadecustomitems.Messages.IN_COMBAT;
+import static net.skycade.skycadecustomitems.Messages.ONLY_ONE_ALLOWED;
 
 public class TeleportationOrbItem extends CustomItem implements Listener {
     public static final ConfigEntry<Integer> TELEPORTATION_ORB_USES = new ConfigEntry<>("prisons", "teleportation-orb-uses", 10);
@@ -66,7 +69,14 @@ public class TeleportationOrbItem extends CustomItem implements Listener {
         if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasLore() || !item.getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName() || !item.getItemMeta().getDisplayName().equals(getName())) return;
         if (event.getItem().getAmount() > 1)  {
-            event.getPlayer().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            ONLY_ONE_ALLOWED.msg(event.getPlayer());
+            return;
+        }
+
+        // Disallow if in combat
+        CombatData.Combat combat = CombatData.getCombat(event.getPlayer());
+        if (combat != null && combat.isInCombat()) {
+            IN_COMBAT.msg(event.getPlayer());
             return;
         }
 

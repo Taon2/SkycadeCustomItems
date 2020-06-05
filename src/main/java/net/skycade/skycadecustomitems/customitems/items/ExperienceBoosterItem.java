@@ -27,6 +27,8 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static net.skycade.prisons.util.SpigotUtil.wrap;
+import static net.skycade.skycadecustomitems.Messages.ACTIVATED;
+import static net.skycade.skycadecustomitems.Messages.ONLY_ONE_ALLOWED;
 
 public class ExperienceBoosterItem extends CustomItem implements Listener {
     public ExperienceBoosterItem() {
@@ -75,12 +77,12 @@ public class ExperienceBoosterItem extends CustomItem implements Listener {
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasLore() || !event.getItem().getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName() || !event.getItem().getItemMeta().getDisplayName().equals(getName())) return;
         if (event.getItem().getAmount() > 1)  {
-            event.getPlayer().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            ONLY_ONE_ALLOWED.msg(event.getPlayer());
             return;
         }
 
         activeExpBoost.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + (getCurrentNum(event.getItem(), "Duration")*60)*1000);
-        event.getPlayer().sendMessage(ChatColor.GREEN + "Activated!");
+        ACTIVATED.msg(event.getPlayer());
         event.getPlayer().getInventory().removeItem(event.getItem());
 
         event.setCancelled(true);

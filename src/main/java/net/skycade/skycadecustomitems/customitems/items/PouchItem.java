@@ -1,5 +1,6 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
+import net.skycade.SkycadeCombat.data.CombatData;
 import net.skycade.SkycadeCore.utility.AsyncScheduler;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.prisons.util.Pair;
@@ -42,6 +43,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import static net.skycade.prisons.util.Messages.TOO_MANY_POUCHES;
+import static net.skycade.skycadecustomitems.Messages.IN_COMBAT;
 
 public class PouchItem extends CustomItem {
     public PouchItem() {
@@ -107,6 +109,13 @@ public class PouchItem extends CustomItem {
 
         if (hasTooManyPouches(event.getPlayer())) {
             TOO_MANY_POUCHES.msg(event.getPlayer());
+            return;
+        }
+
+        // Disallow if in combat
+        CombatData.Combat combat = CombatData.getCombat(event.getPlayer());
+        if (combat != null && combat.isInCombat()) {
+            IN_COMBAT.msg(event.getPlayer());
             return;
         }
 

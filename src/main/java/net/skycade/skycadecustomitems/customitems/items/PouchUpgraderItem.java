@@ -22,6 +22,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static net.skycade.prisons.util.Messages.POUCH_UPGRADER_MAX_LEVEL;
 import static net.skycade.prisons.util.Messages.POUCH_UPGRADER_SUCCESS;
+import static net.skycade.skycadecustomitems.Messages.ONLY_ONE_ALLOWED;
 
 public class PouchUpgraderItem extends CustomItem {
 
@@ -59,7 +60,7 @@ public class PouchUpgraderItem extends CustomItem {
         if (hoveredItem.getType() == null || !hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasDisplayName() || !hoveredItem.getItemMeta().getDisplayName().equals(getName())) return;
         if (clickedItem.getType() == null || clickedItem.getType() == Material.AIR || !clickedItem.hasItemMeta() || !clickedItem.getItemMeta().hasDisplayName() || data == null) return;
         if (hoveredItem.getAmount() > 1 || clickedItem.getAmount() > 1)  {
-            event.getWhoClicked().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            ONLY_ONE_ALLOWED.msg(event.getWhoClicked());
             return;
         }
 

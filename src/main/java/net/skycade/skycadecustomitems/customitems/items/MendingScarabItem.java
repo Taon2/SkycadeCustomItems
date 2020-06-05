@@ -1,5 +1,6 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
+import net.skycade.SkycadeCombat.data.CombatData;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static net.skycade.skycadecustomitems.Messages.REPAIRED;
+import static net.skycade.skycadecustomitems.Messages.*;
 
 public abstract class MendingScarabItem extends CustomItem {
     public MendingScarabItem() {
@@ -40,7 +41,14 @@ public abstract class MendingScarabItem extends CustomItem {
         short maxDurability = clickedItem.getType().getMaxDurability();
         if (maxDurability <= 0 || !matches(hoveredItem) || clickedItem.getDurability() <= 0) return;
         if (hoveredItem.getAmount() > 1 || clickedItem.getAmount() > 1)  {
-            event.getWhoClicked().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            ONLY_ONE_ALLOWED.msg(event.getWhoClicked());
+            return;
+        }
+
+        // Disallow if in combat
+        CombatData.Combat combat = CombatData.getCombat((Player) event.getWhoClicked());
+        if (combat != null && combat.isInCombat()) {
+            IN_COMBAT.msg(event.getWhoClicked());
             return;
         }
 

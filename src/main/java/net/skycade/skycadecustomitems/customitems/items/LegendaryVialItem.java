@@ -5,7 +5,6 @@ import net.skycade.SkycadeEnchants.enchant.common.Enchantment;
 import net.skycade.SkycadeEnchants.enchant.common.EnchantmentManager;
 import net.skycade.prisons.util.EnchantmentTypes;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,11 +15,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static net.skycade.skycadecustomitems.Messages.ONLY_ONE_ALLOWED;
 
 public class LegendaryVialItem extends CustomItem implements Listener {
     public LegendaryVialItem() {
@@ -56,7 +56,7 @@ public class LegendaryVialItem extends CustomItem implements Listener {
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasLore() || !event.getItem().getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName() || !event.getItem().getItemMeta().getDisplayName().equals(getName())) return;
         if (event.getItem().getAmount() > 1)  {
-            event.getPlayer().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            ONLY_ONE_ALLOWED.msg(event.getPlayer());
             return;
         }
 

@@ -21,6 +21,8 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
 
+import static net.skycade.skycadecustomitems.Messages.ONLY_ONE_ALLOWED;
+
 public class RenameTagItem extends CustomItem implements Listener {
     public RenameTagItem() {
         super("RENAME_TAG", ChatColor.DARK_PURPLE + "Rename Tag", Material.NAME_TAG);
@@ -58,7 +60,7 @@ public class RenameTagItem extends CustomItem implements Listener {
         if (!hoveredItem.hasItemMeta() || !hoveredItem.getItemMeta().hasDisplayName() || !hoveredItem.getItemMeta().getDisplayName().equals(getName())) return;
         if (clickedItem == null || clickedItem.getType() == Material.AIR || (clickedItem.hasItemMeta() && clickedItem.getItemMeta().hasLore() && clickedItem.getItemMeta().getLore().contains(CustomItemManager.MAGIC))) return;
         if (hoveredItem.getAmount() > 1 || clickedItem.getAmount() > 1)  {
-            event.getWhoClicked().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            ONLY_ONE_ALLOWED.msg(event.getWhoClicked());
             return;
         }
 

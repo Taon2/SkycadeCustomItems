@@ -6,7 +6,7 @@
 
     <groupId>net.skycade</groupId>
     <artifactId>SkycadeCustomItems</artifactId>
-    <version>1.3.5-SNAPSHOT</version>
+    <version>1.3.6-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -76,6 +76,14 @@
             <version>1.3.4-SNAPSHOT</version>
             <scope>system</scope>
             <systemPath>${basedir}/dependencies/SkycadeShop-1.3.4-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <!--SkycadeCombat-->
+        <dependency>
+            <groupId>net.skycade</groupId>
+            <artifactId>SkycadeCombat</artifactId>
+            <version>1.5.8-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/dependencies/SkycadeCombat-1.5.8-SNAPSHOT.jar</systemPath>
         </dependency>
         <!--CraftBukkit 1.8.8-->
         <dependency>

@@ -1,5 +1,6 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
+import net.skycade.SkycadeCombat.data.CombatData;
 import net.skycade.SkycadeCore.ConfigEntry;
 import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
@@ -20,6 +21,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static net.skycade.skycadecustomitems.Messages.*;
 
 public class ProtectionOrbItem extends CustomItem implements Listener {
     public static final ConfigEntry<Integer> PROTECTION_ORB_DURATION = new ConfigEntry<>("prisons", "protection-orb-duration", 10);
@@ -59,12 +62,19 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasLore() || !event.getItem().getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName() || !event.getItem().getItemMeta().getDisplayName().equals(getName())) return;
         if (event.getItem().getAmount() > 1)  {
-            event.getPlayer().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            ONLY_ONE_ALLOWED.msg(event.getPlayer());
+            return;
+        }
+
+        // Disallow if in combat
+        CombatData.Combat combat = CombatData.getCombat(event.getPlayer());
+        if (combat != null && combat.isInCombat()) {
+            IN_COMBAT.msg(event.getPlayer());
             return;
         }
 
         activeOrbs.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + (PROTECTION_ORB_DURATION.getValue()*60)*1000);
-        event.getPlayer().sendMessage(ChatColor.GREEN + "Activated!");
+        ACTIVATED.msg(event.getPlayer());
         event.getPlayer().getInventory().removeItem(event.getItem());
 
         event.setCancelled(true);
