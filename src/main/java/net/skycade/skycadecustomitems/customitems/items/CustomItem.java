@@ -28,6 +28,18 @@ public abstract class CustomItem implements Listener {
         item = is.clone();
     }
 
+    CustomItem(String handle, String name, Material type, int durability) {
+        this.handle = handle;
+        this.name = name;
+
+        ItemStack is = new ItemStack(type, 1, (short) durability);
+        ItemMeta meta = is.getItemMeta();
+        meta.setDisplayName(name);
+        is.setItemMeta(meta);
+
+        item = is.clone();
+    }
+
     CustomItem(String handle, String name, String counted, Material type) {
         this.handle = handle;
         this.counted = counted;
