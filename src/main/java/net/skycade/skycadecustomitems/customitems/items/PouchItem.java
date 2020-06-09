@@ -135,7 +135,6 @@ public class PouchItem extends CustomItem {
 
             // if the player is moving the pouch into itself
             if (event.getClickedInventory().equals(PouchData.getInventory(pouchData.getId()))) {
-                Bukkit.getConsoleSender().sendMessage("000");
                 // nope! can't do that
                 event.setCancelled(true);
             }
@@ -148,7 +147,6 @@ public class PouchItem extends CustomItem {
 
             // if the player is moving the pouch into itself
             if (event.getInventory().equals(PouchData.getInventory(pouchData.getId()))) {
-                Bukkit.getConsoleSender().sendMessage("000");
                 // nope! can't do that
                 event.setCancelled(true);
             }
