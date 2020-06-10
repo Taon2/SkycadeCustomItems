@@ -3,7 +3,13 @@ package net.skycade.skycadecustomitems.customitems.items;
 import net.skycade.SkycadeCore.ConfigEntry;
 import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
+import net.skycade.koth.SkycadeKoth;
+import net.skycade.koth.events.phase.PhaseChangeEvent;
+import net.skycade.koth.game.GamePhase;
+import net.skycade.koth.game.KOTHGame;
+import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
@@ -21,12 +27,19 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static net.skycade.skycadecustomitems.Messages.KOTH_IN_PROGRESS;
+import static net.skycade.skycadecustomitems.Messages.KOTH_STARTED;
+
 public class ProtectionOrbItem extends CustomItem implements Listener {
     public static final ConfigEntry<Integer> PROTECTION_ORB_DURATION = new ConfigEntry<>("prisons", "protection-orb-duration", 10);
 
     public ProtectionOrbItem() {
         super("PROTECTION_ORB", ChatColor.DARK_AQUA + "Protection Orb", "Duration", Material.MAGMA_CREAM);
         CoreSettings.getInstance().registerSetting(PROTECTION_ORB_DURATION);
+
+        if (Bukkit.getPluginManager().isPluginEnabled("SkycadeKOTH")) {
+            Bukkit.getServer().getPluginManager().registerEvents(new KothListener(), SkycadeCustomItemsPlugin.getInstance());
+        }
     }
 
     private Map<UUID, Long> activeOrbs = new HashMap<>();
@@ -55,17 +68,30 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
     @EventHandler (priority = EventPriority.LOW)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() != (Action.RIGHT_CLICK_AIR) && event.getAction() != (Action.RIGHT_CLICK_BLOCK)) return;
-        if (event.getPlayer() == null || !event.getPlayer().isSneaking()) return;
+
+        Player player = event.getPlayer();
+        if (player == null || !player.isSneaking()) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasLore() || !event.getItem().getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName() || !event.getItem().getItemMeta().getDisplayName().equals(getName())) return;
+
+        if (Bukkit.getPluginManager().isPluginEnabled("SkycadeKOTH")) {
+            if (Optional.ofNullable(SkycadeKoth.getInstance().getGameManager().getActiveKOTHGame())
+                    .map(KOTHGame::getCurrentPhase).map(p -> p == GamePhase.IN_PROGRESS).orElse(false)) {
+                event.setCancelled(true);
+                KOTH_IN_PROGRESS.msg(player);
+                return;
+            }
+        }
+
         if (event.getItem().getAmount() > 1)  {
-            event.getPlayer().sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "This item can only be used with a stack size of 1!");
             return;
         }
 
-        activeOrbs.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + (PROTECTION_ORB_DURATION.getValue()*60)*1000);
-        event.getPlayer().sendMessage(ChatColor.GREEN + "Activated!");
-        event.getPlayer().getInventory().removeItem(event.getItem());
+        activeOrbs.put(player.getUniqueId(), System.currentTimeMillis() + (PROTECTION_ORB_DURATION.getValue()*60)*1000);
+        player.sendMessage(ChatColor.GREEN + "Activated!");
+        player.getInventory().removeItem(event.getItem());
 
         event.setCancelled(true);
     }
@@ -164,5 +190,17 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Shift + Right Click to activate!"
         );
+    }
+
+    private class KothListener implements Listener {
+        @EventHandler(ignoreCancelled = true)
+        public void onKothStart(PhaseChangeEvent event) {
+            if (event.getNewPhase() == GamePhase.IN_PROGRESS) {
+                activeOrbs.keySet().stream().map(Bukkit::getPlayer).filter(Objects::nonNull)
+                        .forEach(p -> KOTH_STARTED.msg(p));
+                activeOrbs.clear();
+            }
+        }
+
     }
 }

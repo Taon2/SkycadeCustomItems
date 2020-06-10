@@ -1,18 +1,24 @@
 package net.skycade.skycadecustomitems;
 
 import net.skycade.SkycadeCore.Localization;
+import net.skycade.SkycadeCore.Localization.Message;
 
 public class Messages {
     // poches
-    public static final Localization.Message POUCH_UPGRADER_MAX_LEVEL = new Localization.Message("pouchupgrader.max-level", "&cYou have reached the maximum level for this pouch!");
-    public static final Localization.Message POUCH_UPGRADER_NOT_POUCH = new Localization.Message("pouchupgrader.not-a-pouch", "&cThat's not a pouch!");
-    public static final Localization.Message POUCH_UPGRADER_SUCCESS = new Localization.Message("pouchupgrader.success", "&aSuccess! &bYou upgraded your pouch to level &6%level%&b!");
-    public static final Localization.Message TOO_MANY_POUCHES = new Localization.Message("pouch.too-many", "&cYou have too many pouches with you! Maximum of 2. Get rid of some to be able to use this pouch.");
+    public static final Message POUCH_UPGRADER_MAX_LEVEL = new Message("pouchupgrader.max-level", "&cYou have reached the maximum level for this pouch!");
+    public static final Message POUCH_UPGRADER_NOT_POUCH = new Message("pouchupgrader.not-a-pouch", "&cThat's not a pouch!");
+    public static final Message POUCH_UPGRADER_SUCCESS = new Message("pouchupgrader.success", "&aSuccess! &bYou upgraded your pouch to level &6%level%&b!");
+    public static final Message TOO_MANY_POUCHES = new Message("pouch.too-many", "&cYou have too many pouches with you! Maximum of 2. Get rid of some to be able to use this pouch.");
 
     // tnt wand
-    public static final Localization.Message TNTWAND_CRAFTED_TNT = new Localization.Message("tntwand.crafted-tnt", "&aSuccess! &bYou crafted &6%amount% &bTNT with your wand!");
+    public static final Message TNTWAND_CRAFTED_TNT = new Message("tntwand.crafted-tnt", "&aSuccess! &bYou crafted &6%amount% &bTNT with your wand!");
     // general
-    public static final Localization.Message REPAIRED = new Localization.Message("repaired", "&aItem repaired!");
+    public static final Message REPAIRED = new Message("repaired", "&aItem repaired!");
+
+    // koth
+    public static final Message KOTH_IN_PROGRESS = new Message("koth-in-progress", "&cKOTH in progress! You cannot use a protection orb.");
+    public static final Message KOTH_STARTED = new Message("koth-started", "&cKOTH started! Your protection orb has been disabled.");
+
 
     public static void init() {
         Localization.getInstance().registerMessages("skycade.customitems",
@@ -20,7 +26,9 @@ public class Messages {
                 POUCH_UPGRADER_NOT_POUCH,
                 POUCH_UPGRADER_SUCCESS,
                 TOO_MANY_POUCHES,
-                REPAIRED
+                REPAIRED,
+                KOTH_IN_PROGRESS,
+                KOTH_STARTED
         );
     }
 }
