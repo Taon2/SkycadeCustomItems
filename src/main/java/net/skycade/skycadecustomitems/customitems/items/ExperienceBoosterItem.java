@@ -1,8 +1,6 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
-import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
-import net.skycade.SkycadeEnchants.SkycadeEnchantsPlugin;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,10 +17,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -35,16 +29,8 @@ public class ExperienceBoosterItem extends CustomItem implements Listener {
         super("EXPERIENCE_BOOSTER", ChatColor.BLUE + "Experience Booster", Material.EYE_OF_ENDER);
     }
 
-    private String itemTable;
-    private Map<Material, Integer> itemMap;
     private Map<UUID, Long> activeExpBoost = new HashMap<>();
     private List<UUID> canGainXP = new ArrayList<>();
-
-    @Override
-    public void postLoad() {
-        itemTable = SkycadeEnchantsPlugin.getInstance().getConfig().getString("database.prisons-items-table");
-        itemMap = getAllItems();
-    }
 
     @Override
     public void giveItem(Player p, int amount) {
@@ -71,19 +57,21 @@ public class ExperienceBoosterItem extends CustomItem implements Listener {
     @EventHandler (priority = EventPriority.LOW)
     public void onPlayerInteract(PlayerInteractEvent event) {
         //Specific case for throwing eye of ender
-        if (event.getPlayer().getItemInHand().getType() == (Material.EYE_OF_ENDER)) event.setCancelled(true);
+        Player player = event.getPlayer();
+
+        if (player.getItemInHand().getType() == (Material.EYE_OF_ENDER)) event.setCancelled(true);
         if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
-        if (event.getPlayer() == null || !event.getPlayer().isSneaking()) return;
+        if (player == null || !player.isSneaking()) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasLore() || !event.getItem().getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName() || !event.getItem().getItemMeta().getDisplayName().equals(getName())) return;
         if (event.getItem().getAmount() > 1)  {
-            ONLY_ONE_ALLOWED.msg(event.getPlayer());
+            ONLY_ONE_ALLOWED.msg(player);
             return;
         }
 
-        activeExpBoost.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + (getCurrentNum(event.getItem(), "Duration")*60)*1000);
-        ACTIVATED.msg(event.getPlayer());
-        event.getPlayer().getInventory().removeItem(event.getItem());
+        activeExpBoost.put(player.getUniqueId(), System.currentTimeMillis() + (getCurrentNum(event.getItem(), "Duration")*60)*1000);
+        ACTIVATED.msg(player);
+        player.getInventory().removeItem(event.getItem());
 
         event.setCancelled(true);
     }
@@ -93,26 +81,20 @@ public class ExperienceBoosterItem extends CustomItem implements Listener {
         if (event.getPlayer() == null) return;
         Player player = event.getPlayer();
 
-        if (event.getExpToDrop() > 0) {
-            event.setExpToDrop(0);
-        }
+        int experience = event.getExpToDrop();
+
+        event.setExpToDrop(0);
 
         //Verifies the player is in a mine where they can gain experience
         for (Mine mine : PrisonMines.getInstance().getMines()) {
-            if (PrisonMines.getInstance().getMineManager().getMine(mine.getName()).get().isInMine(wrap(player.getLocation()))) {
+            if (mine.isInMine(wrap(player.getLocation()))) {
                 //Removes the player from the list if its been more than the allocated amount of time already
                 if (activeExpBoost.containsKey(player.getUniqueId()) && activeExpBoost.get(player.getUniqueId()) <= System.currentTimeMillis()) {
                     activeExpBoost.remove(player.getUniqueId());
                 }
-                int experience = 0;
-
-                //Calculates the amount of experience that the player should default get per block mined
-                if (itemMap.containsKey(event.getBlock().getType())) {
-                    experience = itemMap.get(event.getBlock().getType());
-                }
 
                 //If the player has a boost active, double the experience
-                if (activeExpBoost.containsKey(player.getUniqueId()) && experience > 0) {
+                if (activeExpBoost.containsKey(player.getUniqueId())) {
                     experience *= 2;
                 }
 
@@ -132,21 +114,6 @@ public class ExperienceBoosterItem extends CustomItem implements Listener {
 
         if (event.getAmount() > 0) {
             event.setAmount(0);
-        }
-    }
-
-    private HashMap<Material, Integer> getAllItems() {
-        try (Connection connection = CoreSettings.getInstance().getConnection()) {
-            try (Statement statement = connection.createStatement()) {
-                ResultSet rs = statement.executeQuery("SELECT * FROM " + itemTable);
-                HashMap<Material, Integer> map = new HashMap<>();
-                while(rs.next())
-                    map.put(Material.valueOf(rs.getString("InitialItem").toUpperCase()), Integer.valueOf(rs.getString("ExpValue")));
-
-                return map;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
