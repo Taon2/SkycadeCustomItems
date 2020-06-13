@@ -1,7 +1,7 @@
 name: SkycadeCustomItems
-version: 1.4.0-SNAPSHOT
+version: 1.4.1-SNAPSHOT
 description: Skycade Custom Items
 authors: ["Christian Doughty (Taon2)"]
 main: net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin
-softdepend: [SkycadeShop, SkycadeEnchants, Prison]
+softdepend: [SkycadeShop, SkycadeEnchants, Prison, SkycadeKOTH]
 depend: [SkycadeCore]
