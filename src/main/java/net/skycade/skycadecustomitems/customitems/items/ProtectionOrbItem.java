@@ -4,12 +4,11 @@ import net.skycade.SkycadeCombat.data.CombatData;
 import net.skycade.SkycadeCore.ConfigEntry;
 import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
-import net.skycade.koth.SkycadeKoth;
 import net.skycade.koth.events.phase.PhaseChangeEvent;
 import net.skycade.koth.game.GamePhase;
-import net.skycade.koth.game.KOTHGame;
 import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
+import net.skycade.skycadecustomitems.util.KothHook;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -75,8 +74,7 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName() || !event.getItem().getItemMeta().getDisplayName().equals(getName())) return;
 
         if (Bukkit.getPluginManager().isPluginEnabled("SkycadeKOTH")) {
-            if (Optional.ofNullable(SkycadeKoth.getInstance().getGameManager().getActiveKOTHGame())
-                    .map(KOTHGame::getCurrentPhase).map(p -> p == GamePhase.IN_PROGRESS).orElse(false)) {
+            if (KothHook.isKothRunning()) {
                 event.setCancelled(true);
                 KOTH_IN_PROGRESS.msg(player);
                 return;
@@ -199,10 +197,10 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
         );
     }
 
-    private class KothListener implements Listener {
+    private  class KothListener implements Listener {
         @EventHandler(ignoreCancelled = true)
         public void onKothStart(PhaseChangeEvent event) {
-            if (event.getNewPhase() == GamePhase.IN_PROGRESS) {
+            if (KothHook.isKothRunning()) {
                 activeOrbs.keySet().stream().map(Bukkit::getPlayer).filter(Objects::nonNull)
                         .forEach(p -> KOTH_STARTED.msg(p));
                 activeOrbs.clear();
