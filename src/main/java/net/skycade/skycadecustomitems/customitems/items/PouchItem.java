@@ -42,8 +42,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import static net.skycade.prisons.util.Messages.TOO_MANY_POUCHES;
 import static net.skycade.skycadecustomitems.Messages.IN_COMBAT;
+import static net.skycade.skycadecustomitems.Messages.TOO_MANY_POUCHES;
 
 public class PouchItem extends CustomItem {
     public PouchItem() {

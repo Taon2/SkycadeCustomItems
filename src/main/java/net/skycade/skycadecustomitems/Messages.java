@@ -10,7 +10,6 @@ public class Messages {
     public static final Message POUCH_UPGRADER_SUCCESS = new Message("pouchupgrader.success", "&aSuccess! &bYou upgraded your pouch to level &6%level%&b!");
     public static final Message TOO_MANY_POUCHES = new Message("pouch.too-many", "&cYou have too many pouches with you! Maximum of 2. Get rid of some to be able to use this pouch.");
 
-
     // tnt wand
     public static final Message TNTWAND_CRAFTED_TNT = new Message("tntwand.crafted-tnt", "&aSuccess! &bYou crafted &6%amount% &bTNT with your wand!");
     // general
