@@ -282,7 +282,7 @@ public class PouchItem extends CustomItem {
                 ItemStack[] contents = pouchInventory.getContents();
                 for (int i = 0; i < contents.length; ++i) {
                     ItemStack pouchItem = contents[i];
-                    if (pouchItem == null) continue;
+                    if (pouchItem == null || (pouchItem.hasItemMeta() && pouchItem.getItemMeta().hasLore())) continue;
 
                     SkycadeShoppable shoppable = (SkycadeShoppable) shop.get("item:" + pouchItem.getType().name() + ":" + pouchItem.getDurability())
                             .filter(Shoppable::isSellable).orElse(null);
