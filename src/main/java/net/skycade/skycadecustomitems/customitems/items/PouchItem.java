@@ -331,7 +331,7 @@ public class PouchItem extends CustomItem {
                 for (int i = 0; i < contents.length; i++) {
                     if (amount == 0) break;
                     ItemStack pouchItem = contents[i];
-                    if (pouchItem == null) continue;
+                    if (pouchItem == null || (pouchItem.hasItemMeta() && pouchItem.getItemMeta().hasLore())) continue;
                     if (shoppable.matches(pouchItem.getType().name() + ":" + pouchItem.getDurability())) {
                         if (pouchItem.getAmount() > amount) {
                             pouchItem.setAmount(pouchItem.getAmount() - amount);
