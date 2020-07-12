@@ -5,6 +5,7 @@ import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -17,6 +18,8 @@ import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -61,10 +64,10 @@ public class ThrowableCreeperEggItem extends CustomItem implements Listener {
             if (event.getItem() != null && matches(event.getItem())) {
                 if (!currentEggs.containsKey(event.getPlayer().getUniqueId()))
                     currentEggs.put(event.getPlayer().getUniqueId(), event.getItem().getItemMeta().getDisplayName());
-                else if (currentEggs.containsKey(event.getPlayer().getUniqueId())) {
-                    event.getPlayer().sendMessage(ChatColor.RED + "Wait for your first egg to land!");
-                    event.setCancelled(true);
-                }
+                //else if (currentEggs.containsKey(event.getPlayer().getUniqueId())) {
+                //    event.getPlayer().sendMessage(ChatColor.RED + "Wait for your first egg to land!");
+                //    event.setCancelled(true);
+                //}
             }
         }
     }
@@ -85,9 +88,16 @@ public class ThrowableCreeperEggItem extends CustomItem implements Listener {
         if (event.getEntity().getType() == EntityType.EGG && event.getEntity().getCustomName() != null && event.getEntity().getCustomName().equals(currentEggs.get(((Player)event.getEntity().getShooter()).getUniqueId()))) {
             Location loc = event.getEntity().getLocation();
             //todo this line throws null exception dur to tacospigot on factions
-            loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 4F, false, true);
 
-            currentEggs.remove(((Player)event.getEntity().getShooter()).getUniqueId());
+            //loc.getWorld().createExplosion()
+            Creeper creeper = (Creeper) loc.getWorld().spawnEntity(
+                    new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ()), EntityType.CREEPER
+            );
+            creeper.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100, 1000));
+            creeper.setExplosionRadius(4);
+            creeper.setMaxFuseTicks(1);
+
+            currentEggs.remove(((Player) event.getEntity().getShooter()).getUniqueId());
         }
     }
 

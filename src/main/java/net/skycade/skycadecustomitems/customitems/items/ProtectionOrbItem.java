@@ -5,7 +5,6 @@ import net.skycade.SkycadeCore.ConfigEntry;
 import net.skycade.SkycadeCore.CoreSettings;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.koth.events.phase.PhaseChangeEvent;
-import net.skycade.koth.game.GamePhase;
 import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import net.skycade.skycadecustomitems.util.KothHook;
@@ -161,7 +160,7 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
             //Stops damage from both parties if one of them has the orb active
             if (activeOrbs.containsKey(event.getEntity().getUniqueId()) || activeOrbs.containsKey(event.getDamager().getUniqueId())) {
                 if (event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
-                    event.getEntity().remove();
+                    event.getDamager().remove();
                 }
                 event.setCancelled(true);
             }

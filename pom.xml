@@ -117,6 +117,7 @@
             <scope>system</scope>
             <systemPath>${basedir}/dependencies/SkycadeFactions-1.22.0.jar</systemPath>
         </dependency>
+<<<<<<< Updated upstream
         <!--Koth-->
         <dependency>
             <groupId>net.skycade</groupId>
@@ -124,6 +125,15 @@
             <version>1.0.5</version>
             <scope>system</scope>
             <systemPath>${basedir}/dependencies/SkycadeKoth-1.0.5.jar</systemPath>
+=======
+        <!--TacoSpigot-->
+        <dependency>
+            <groupId>net.techable</groupId>
+            <artifactId>tacospigot</artifactId>
+            <version>1.8.8</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/dependencies/TacoSpigot-1.8.8.jar</systemPath>
+>>>>>>> Stashed changes
         </dependency>
     </dependencies>
 </project>
