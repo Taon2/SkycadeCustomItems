@@ -42,8 +42,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import static net.skycade.prisons.util.Messages.TOO_MANY_POUCHES;
 import static net.skycade.skycadecustomitems.Messages.IN_COMBAT;
+import static net.skycade.skycadecustomitems.Messages.TOO_MANY_POUCHES;
 
 public class PouchItem extends CustomItem {
     public PouchItem() {
@@ -282,7 +282,7 @@ public class PouchItem extends CustomItem {
                 ItemStack[] contents = pouchInventory.getContents();
                 for (int i = 0; i < contents.length; ++i) {
                     ItemStack pouchItem = contents[i];
-                    if (pouchItem == null) continue;
+                    if (pouchItem == null || (pouchItem.hasItemMeta() && pouchItem.getItemMeta().hasLore())) continue;
 
                     SkycadeShoppable shoppable = (SkycadeShoppable) shop.get("item:" + pouchItem.getType().name() + ":" + pouchItem.getDurability())
                             .filter(Shoppable::isSellable).orElse(null);
@@ -331,7 +331,7 @@ public class PouchItem extends CustomItem {
                 for (int i = 0; i < contents.length; i++) {
                     if (amount == 0) break;
                     ItemStack pouchItem = contents[i];
-                    if (pouchItem == null) continue;
+                    if (pouchItem == null || (pouchItem.hasItemMeta() && pouchItem.getItemMeta().hasLore())) continue;
                     if (shoppable.matches(pouchItem.getType().name() + ":" + pouchItem.getDurability())) {
                         if (pouchItem.getAmount() > amount) {
                             pouchItem.setAmount(pouchItem.getAmount() - amount);

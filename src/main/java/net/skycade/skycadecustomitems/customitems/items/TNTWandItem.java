@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static net.skycade.skycadecustomitems.Messages.TNTWAND_CRAFTED_TNT;
+import static net.skycade.skycadecustomitems.Messages.TNTWAND_SENT_TNT;
 
 public class TNTWandItem extends CustomItem implements Listener {
 
@@ -35,8 +35,13 @@ public class TNTWandItem extends CustomItem implements Listener {
     }
 
     @Override
-    public void giveItem(Player p, int num) {
-        for (int i = num; i > 0; i--) {
+    public void giveItem(Player p, int amount) {
+        giveItem(p, 100, amount);
+    }
+
+    @Override
+    public void giveItem(Player p, int uses, int amount) {
+        for (int i = amount; i > 0; i--) {
             ItemStack is = getItem();
             if (is == null) return;
 
@@ -44,16 +49,11 @@ public class TNTWandItem extends CustomItem implements Listener {
             meta.setLore(getRawLore());
             is.setItemMeta(meta);
 
-            setMaxNum(is, is.getItemMeta().getLore(), 100);
-            setNum(is, is.getItemMeta().getLore(), getCounted(), 100);
+            setMaxNum(is, is.getItemMeta().getLore(), uses);
+            setNum(is, is.getItemMeta().getLore(), getCounted(), uses);
 
             InventoryUtil.giveItems(p, is);
         }
-    }
-
-    @Override
-    public void giveItem(Player p, int duration, int amount) {
-        giveItem(p, amount);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -125,7 +125,20 @@ public class TNTWandItem extends CustomItem implements Listener {
                 chestInv.addItem(new ItemStack(Material.TNT));
             }
         } else { // player IS in faction, so add to bank
+            // add all remaining tnt in the chest to the faction bank
+            int tntInChest = 0;
+            for (ItemStack itemStack : chestInv.getContents()) {
+                if (itemStack == null || itemStack.getType().equals(Material.AIR)) continue;
+                if (itemStack.getType().equals(Material.TNT)) {
+                    tntInChest += itemStack.getAmount();
+                }
+            }
+
+            // remove the tnt from the chest that's about to end up in the faction TNT bank
+            removeItems(chestInv, new ItemStack(Material.TNT), tntInChest);
+
             // add to faction TNT bank
+            maxTnt += tntInChest;
             factionPlayer.getFaction().setTnt(factionPlayer.getFaction().getTnt() + maxTnt);
         }
 
@@ -143,7 +156,7 @@ public class TNTWandItem extends CustomItem implements Listener {
             event.getPlayer().updateInventory();
         }
 
-        TNTWAND_CRAFTED_TNT.msg(event.getPlayer(), "%amount%", Integer.toString(maxTnt));
+        TNTWAND_SENT_TNT.msg(event.getPlayer(), "%amount%", Integer.toString(maxTnt));
     }
 
     public List<String> getRawLore() {
@@ -155,6 +168,8 @@ public class TNTWandItem extends CustomItem implements Listener {
                 ChatColor.AQUA + "Uses: " + ChatColor.WHITE + "%current%/%max%",
                 makeUnstackable,
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Craft 9 gunpowder into TNT!",
+                ChatColor.GRAY + "" + ChatColor.ITALIC + "Automatically sends any TNT in chest",
+                ChatColor.GRAY + "" + ChatColor.ITALIC + "to the Faction's /f tnt balance!",
                 "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Shift + Click onto a chest to craft your TNT!"
         );

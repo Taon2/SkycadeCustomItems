@@ -82,7 +82,7 @@ public class RenameTagItem extends CustomItem implements Listener {
 
             for (Map.Entry<String, CustomItem> entry : CustomItemManager.getAllCustomItems().entrySet()) {
                 CustomItem customItem = entry.getValue();
-                if (v.equalsIgnoreCase(customItem.getName()) || v.length() > 30) {
+                if (v.equalsIgnoreCase(customItem.getName()) || v.length() > 50) {
                     player.sendMessage(ChatColor.RED + "That name is either too long or not allowed. Maximum name length is 30 characters.");
                     giveItem(player, 1);
                     player.updateInventory();
