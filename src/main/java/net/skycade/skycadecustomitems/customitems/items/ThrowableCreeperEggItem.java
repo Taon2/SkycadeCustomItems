@@ -1,10 +1,13 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
+import net.minecraft.server.v1_8_R3.EntityLiving;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.EntityType;
@@ -87,15 +90,21 @@ public class ThrowableCreeperEggItem extends CustomItem implements Listener {
     public void onProjectileHit(ProjectileHitEvent event) {
         if (event.getEntity().getType() == EntityType.EGG && event.getEntity().getCustomName() != null && event.getEntity().getCustomName().equals(currentEggs.get(((Player)event.getEntity().getShooter()).getUniqueId()))) {
             Location loc = event.getEntity().getLocation();
-            //todo this line throws null exception dur to tacospigot on factions
 
             //loc.getWorld().createExplosion()
-            Creeper creeper = (Creeper) loc.getWorld().spawnEntity(
-                    new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ()), EntityType.CREEPER
-            );
-            creeper.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100, 1000));
-            creeper.setExplosionRadius(4);
-            creeper.setMaxFuseTicks(1);
+            Creeper creeper = loc.getWorld().spawn(loc, Creeper.class);
+            creeper.setCustomName(ChatColor.RED + "");
+            creeper.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 5, 100));
+            creeper.setCustomNameVisible(false);
+            net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) creeper).getHandle();
+            NBTTagCompound tag = new NBTTagCompound();
+            nmsEntity.c(tag);
+            tag.setInt("ignited", 1);
+            tag.setInt("Fuse", 0);
+            tag.setInt("ExplosionRadius", 2);
+            tag.setString("CustomName", "§5§2§r§2Throwable Creeper Egg");
+            EntityLiving el = (EntityLiving) nmsEntity;
+            el.a(tag);
 
             currentEggs.remove(((Player) event.getEntity().getShooter()).getUniqueId());
         }
