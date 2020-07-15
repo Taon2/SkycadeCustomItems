@@ -161,6 +161,7 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
             if (activeOrbs.containsKey(event.getEntity().getUniqueId()) || activeOrbs.containsKey(event.getDamager().getUniqueId())) {
                 if (event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
                     event.getDamager().remove();
+                    event.getEntity().setFireTicks(1);
                 }
                 event.setCancelled(true);
             }

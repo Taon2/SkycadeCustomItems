@@ -21,8 +21,6 @@ import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -92,15 +90,26 @@ public class ThrowableCreeperEggItem extends CustomItem implements Listener {
             Location loc = event.getEntity().getLocation();
 
             //loc.getWorld().createExplosion()
+//            Creeper creeper = loc.getWorld().spawn(loc, Creeper.class);
+//            creeper.setCustomName(ChatColor.RED + "");
+//            creeper.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 5, 100));
+//            creeper.setCustomNameVisible(false);
+//            net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) creeper).getHandle();
+//            NBTTagCompound tag = new NBTTagCompound();
+//            nmsEntity.c(tag);
+//            tag.setInt("ignited", 1);
+//            tag.setInt("Fuse", 0);
+//            tag.setInt("ExplosionRadius", 2);
+//            tag.setString("CustomName", "§5§2§r§2Throwable Creeper Egg");
+//            EntityLiving el = (EntityLiving) nmsEntity;
+//            el.a(tag);
             Creeper creeper = loc.getWorld().spawn(loc, Creeper.class);
-            creeper.setCustomName(ChatColor.RED + "");
-            creeper.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 5, 100));
-            creeper.setCustomNameVisible(false);
+            creeper.setCustomNameVisible(true);
             net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) creeper).getHandle();
             NBTTagCompound tag = new NBTTagCompound();
             nmsEntity.c(tag);
             tag.setInt("ignited", 1);
-            tag.setInt("Fuse", 0);
+            tag.setInt("Fuse", 1);
             tag.setInt("ExplosionRadius", 2);
             tag.setString("CustomName", "§5§2§r§2Throwable Creeper Egg");
             EntityLiving el = (EntityLiving) nmsEntity;
