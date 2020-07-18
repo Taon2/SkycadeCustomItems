@@ -150,10 +150,10 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
             if (attacker != null && attacker.getType() != EntityType.PLAYER) return;
 
             //Removes the player from the list if its been more than the allocated amount of time already
-            if (activeOrbs.containsKey(event.getEntity().getUniqueId()) && activeOrbs.get(event.getEntity().getUniqueId()) <= System.currentTimeMillis()) {
+            if (activeOrbs.containsKey(event.getEntity().getUniqueId()) && !isProtOrbEnabled(event.getEntity().getUniqueId())) {
                 activeOrbs.remove(event.getEntity().getUniqueId());
             }
-            if (activeOrbs.containsKey(event.getDamager().getUniqueId()) && activeOrbs.get(event.getDamager().getUniqueId()) <= System.currentTimeMillis()) {
+            if (activeOrbs.containsKey(event.getDamager().getUniqueId()) && !isProtOrbEnabled(event.getDamager().getUniqueId())) {
                 activeOrbs.remove(event.getDamager().getUniqueId());
             }
 
@@ -178,6 +178,10 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
             activeOrbs.remove(event.getPlayer().getUniqueId());
             event.setCancelled(true);
         }
+    }
+
+    public boolean isProtOrbEnabled(UUID uuid) {
+        return activeOrbs.get(uuid) > System.currentTimeMillis();
     }
 
     public List<String> getRawLore() {
