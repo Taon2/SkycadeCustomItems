@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class ThrowableCreeperEggItem extends CustomItem implements Listener {
     public ThrowableCreeperEggItem() {
@@ -120,13 +119,10 @@ public class ThrowableCreeperEggItem extends CustomItem implements Listener {
     }
 
     public List<String> getRawLore() {
-        int random = ThreadLocalRandom.current().nextInt();
-        String makeUnstackable = Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR));
-        makeUnstackable = makeUnstackable.substring(0, makeUnstackable.length() - 1);
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.GRAY + "Immediately explodes upon landing!",
-                makeUnstackable,
+                "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Right click to throw!"
         );
     }

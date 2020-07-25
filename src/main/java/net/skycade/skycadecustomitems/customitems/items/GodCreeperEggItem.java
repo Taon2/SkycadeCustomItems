@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.*;
@@ -110,13 +109,10 @@ public class GodCreeperEggItem extends CustomItem implements Listener {
     }
 
     public List<String> getRawLore() {
-        int random = ThreadLocalRandom.current().nextInt();
-        String makeUnstackable = Integer.toString(random).replaceAll("", Character.toString(ChatColor.COLOR_CHAR));
-        makeUnstackable = makeUnstackable.substring(0, makeUnstackable.length() - 1);
         return Arrays.asList(
                 CustomItemManager.MAGIC,
                 ChatColor.GRAY + "Destroys blocks, even while under water!",
-                makeUnstackable,
+                "",
                 ChatColor.GRAY + "" + ChatColor.ITALIC + "Right click on a block to summon!"
         );
     }
