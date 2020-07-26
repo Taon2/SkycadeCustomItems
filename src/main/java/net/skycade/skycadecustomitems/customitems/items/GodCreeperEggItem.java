@@ -1,7 +1,10 @@
 package net.skycade.skycadecustomitems.customitems.items;
 
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
+import net.skycade.skycadeworldguardapi.WorldGuardAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -77,6 +80,8 @@ public class GodCreeperEggItem extends CustomItem implements Listener {
         Entity creeper = event.getEntity();
         if (!(creeper instanceof Creeper)) return;
 
+        if (isWorldGuardProtected(event.getLocation())) return;
+
         String customName = creeper.getCustomName();
         if (customName != null && customName.equals(getName())) {
 
@@ -106,6 +111,14 @@ public class GodCreeperEggItem extends CustomItem implements Listener {
 
             blocks.addAll(uniqueBlocks);
         }
+    }
+
+    public static boolean isWorldGuardProtected(Location loc) {
+
+        if (WorldGuardAPI.getRegionManager(loc.getWorld()).getRegion("__global__") == null)
+            return false;
+        else
+            return WorldGuardAPI.getRegionManager(loc.getWorld()).getRegion("__global__").getFlag(DefaultFlag.CREEPER_EXPLOSION) == StateFlag.State.DENY;
     }
 
     public List<String> getRawLore() {
