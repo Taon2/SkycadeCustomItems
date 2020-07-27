@@ -28,6 +28,17 @@ public class RenameTagItem extends CustomItem implements Listener {
         super("RENAME_TAG", ChatColor.DARK_PURPLE + "Rename Tag", Material.NAME_TAG);
     }
 
+    private static List<Material> bannedTypes;
+
+    static {
+        bannedTypes = Arrays.asList(
+                Material.MOB_SPAWNER,
+                Material.MONSTER_EGG,
+                Material.MONSTER_EGGS,
+                Material.HOPPER
+        );
+    }
+
     private static Map<UUID, BiConsumer<Player, String>> listenForInput = new HashMap<>();
 
     @Override
@@ -63,6 +74,9 @@ public class RenameTagItem extends CustomItem implements Listener {
             ONLY_ONE_ALLOWED.msg(event.getWhoClicked());
             return;
         }
+
+        //Stop certain items from being renamed
+        if (bannedTypes.contains(clickedItem.getType())) return;
 
         //Removes tag
         event.setCancelled(true);
