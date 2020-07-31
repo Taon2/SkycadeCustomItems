@@ -85,8 +85,15 @@ public class ThrowableCreeperEggItem extends CustomItem implements Listener {
     // Spawns an explosion at the landing location of the egg if it is the correct item
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onProjectileHit(ProjectileHitEvent event) {
-        if (event.getEntity().getType() == EntityType.EGG && event.getEntity().getCustomName() != null && event.getEntity().getCustomName().equals(currentEggs.get(((Player)event.getEntity().getShooter()).getUniqueId()))) {
+        if (event.getEntity().getType() == EntityType.EGG
+                && event.getEntity().getCustomName() != null
+                && event.getEntity().getCustomName()
+                .equals(currentEggs.get(((Player)event.getEntity().getShooter()).getUniqueId()))) {
             Location loc = event.getEntity().getLocation();
+
+            if (loc.getBlock().getType() != Material.AIR) {
+                return;
+            }
 
             //loc.getWorld().createExplosion()
 //            Creeper creeper = loc.getWorld().spawn(loc, Creeper.class);

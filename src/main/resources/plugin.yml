@@ -1,5 +1,5 @@
 name: SkycadeCustomItems
-version: 1.4.15-SNAPSHOT
+version: 1.4.16-SNAPSHOT
 description: Skycade Custom Items
 authors: ["Christian Doughty (Taon2)"]
 main: net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin

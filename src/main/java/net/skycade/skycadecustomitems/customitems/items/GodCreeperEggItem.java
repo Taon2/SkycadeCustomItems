@@ -48,7 +48,8 @@ public class GodCreeperEggItem extends CustomItem implements Listener {
                     e == Material.EMERALD_BLOCK ||
                     e == Material.ANVIL ||
                     e == Material.ENCHANTMENT_TABLE ||
-                    e == Material.ENDER_CHEST
+                    e == Material.ENDER_CHEST ||
+                    e == Material.WEB
     ).collect(Collectors.toList());
 
     @Override
