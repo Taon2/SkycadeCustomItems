@@ -19,6 +19,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -40,7 +41,7 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
         }
     }
 
-    private Map<UUID, Long> activeOrbs = new HashMap<>();
+    public static Map<UUID, Long> activeOrbs = new HashMap<>();
 
     @Override
     public void giveItem(Player p, int num) {
@@ -111,7 +112,9 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
                // EntityType.LINGERING_POTION,
                // EntityType.AREA_EFFECT_CLOUD,
                 EntityType.SNOWBALL,
-                EntityType.PLAYER
+                EntityType.PLAYER,
+                EntityType.FISHING_HOOK,
+                EntityType.EGG
         );
     }
 
@@ -141,6 +144,16 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
                         if (snowball.getShooter() instanceof Player){
                             attacker = (Entity) snowball.getShooter();
                         }
+                    } else if (event.getDamager().getType() == EntityType.EGG) {
+                        Egg egg = (Egg) event.getDamager();
+                        if (egg.getShooter() instanceof Player){
+                            attacker = (Entity) egg.getShooter();
+                        }
+                    } else if (event.getDamager().getType() == EntityType.FISHING_HOOK) {
+                        FishHook fishHook = (FishHook) event.getDamager();
+                        if (fishHook.getShooter() instanceof Player){
+                            attacker = (Entity) fishHook.getShooter();
+                        }
                     } else {
                         return;
                     }
@@ -163,6 +176,17 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
                     event.getDamager().remove();
                     event.getEntity().setFireTicks(1);
                 }
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerFish(PlayerFishEvent event) {
+        Player player = event.getPlayer();
+        if (event.getCaught() instanceof Player) {
+            Player caught = (Player) event.getCaught();
+            if (activeOrbs.containsKey(player.getUniqueId()) || activeOrbs.containsKey(caught.getUniqueId())) {
                 event.setCancelled(true);
             }
         }

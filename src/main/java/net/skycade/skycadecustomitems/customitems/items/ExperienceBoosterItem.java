@@ -26,7 +26,7 @@ import static net.skycade.skycadecustomitems.Messages.ONLY_ONE_ALLOWED;
 
 public class ExperienceBoosterItem extends CustomItem implements Listener {
     public ExperienceBoosterItem() {
-        super("EXPERIENCE_BOOSTER", ChatColor.BLUE + "Experience Booster", Material.EYE_OF_ENDER);
+        super("EXPERIENCE_BOOSTER", ChatColor.BLUE + "Experience Booster", "Duration", Material.EYE_OF_ENDER);
     }
 
     private Map<UUID, Long> activeExpBoost = new HashMap<>();
@@ -61,7 +61,7 @@ public class ExperienceBoosterItem extends CustomItem implements Listener {
 
         if (player.getItemInHand().getType() == (Material.EYE_OF_ENDER)) event.setCancelled(true);
         if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
-        if (player == null || !player.isSneaking()) return;
+        if (!player.isSneaking()) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasLore() || !event.getItem().getItemMeta().getLore().contains(CustomItemManager.MAGIC)) return;
         if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName() || !event.getItem().getItemMeta().getDisplayName().equals(getName())) return;
         if (event.getItem().getAmount() > 1)  {
