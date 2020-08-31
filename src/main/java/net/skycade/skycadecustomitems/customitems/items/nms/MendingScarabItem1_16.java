@@ -1,5 +1,6 @@
 package net.skycade.skycadecustomitems.customitems.items.nms;
 
+import net.minecraft.server.v1_16_R2.NBTTagInt;
 import net.skycade.SkycadeCore.utility.command.InventoryUtil;
 import net.skycade.SkycadeEnchants.enchant.common.EnchantmentManager;
 import net.skycade.skycadecustomitems.customitems.CustomItemManager;
@@ -34,7 +35,7 @@ public class MendingScarabItem1_16 extends MendingScarabItem {
             net.minecraft.server.v1_16_R2.ItemStack itemStack = org.bukkit.craftbukkit.v1_16_R2.inventory.CraftItemStack.asNMSCopy(item);
             net.minecraft.server.v1_16_R2.NBTTagCompound nbt = itemStack.getTag();
             if (nbt != null) {
-                nbt.set("mending", new net.minecraft.server.v1_16_R2.NBTTagInt(ThreadLocalRandom.current().nextInt()));
+                nbt.set("mending", NBTTagInt.a(ThreadLocalRandom.current().nextInt()));
             }
             itemStack.setTag(nbt);
 
