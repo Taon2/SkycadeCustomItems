@@ -15,6 +15,7 @@ public class SkycadeCustomItemsPlugin extends SkycadePlugin {
     private static SkycadeCustomItemsPlugin instance;
 
     public static boolean v18;
+    public static boolean v112;
 
     public SkycadeCustomItemsPlugin() {
         instance = this;
@@ -29,6 +30,7 @@ public class SkycadeCustomItemsPlugin extends SkycadePlugin {
         super.onEnable();
 
         v18 = Bukkit.getServer().getClass().getPackage().getName().contains("1_8");
+        v112 = Bukkit.getServer().getClass().getPackage().getName().contains("1_12");
 
         registerListeners(new ProtectionListener());
         if (!v18) registerListeners(new ProtectionListener1_12());

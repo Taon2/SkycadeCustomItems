@@ -4,6 +4,7 @@ import net.skycade.skycadecustomitems.SkycadeCustomItemsPlugin;
 import net.skycade.skycadecustomitems.customitems.commands.CustomItemCommand;
 import net.skycade.skycadecustomitems.customitems.items.*;
 import net.skycade.skycadecustomitems.customitems.items.nms.MendingScarabItem1_12;
+import net.skycade.skycadecustomitems.customitems.items.nms.MendingScarabItem1_16;
 import net.skycade.skycadecustomitems.customitems.items.nms.MendingScarabItem1_8;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -45,8 +46,10 @@ public class CustomItemManager {
 
         if (SkycadeCustomItemsPlugin.v18) {
             registerCustomItem(new MendingScarabItem1_8());
-        } else {
+        } else if (SkycadeCustomItemsPlugin.v112) {
             registerCustomItem(new MendingScarabItem1_12());
+        } else {
+            registerCustomItem(new MendingScarabItem1_16());
         }
     }
 
