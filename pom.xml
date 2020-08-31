@@ -101,6 +101,14 @@
             <scope>system</scope>
             <systemPath>${basedir}/dependencies/craftbukkit-1.12.2.jar</systemPath>
         </dependency>
+        <!--CraftBukkit1.16.2-->
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit1.16.2</artifactId>
+            <version>1.16.2-R0.1-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/dependencies/craftbukkit-1.16.2.jar</systemPath>
+        </dependency>
         <!--Prison-->
         <dependency>
             <groupId>net.skycade</groupId>
