@@ -125,10 +125,6 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
         if (disabledTypes.contains(event.getDamager().getType())) {
             Entity attacker = null;
             switch (event.getCause()) {
-                case MAGIC:
-                    // Stops all damage potions and stuff
-                    event.setCancelled(true);
-                    break;
                 case ENTITY_ATTACK:
                     attacker = event.getDamager();
                     break;
@@ -157,6 +153,10 @@ public class ProtectionOrbItem extends CustomItem implements Listener {
                     } else {
                         return;
                     }
+                    break;
+                default:
+                    // stops for all potions, drowning, suffocation, etc etc
+                    event.setCancelled(true);
                     break;
             }
 
