@@ -139,7 +139,7 @@ public class TNTWandItem extends CustomItem implements Listener {
 
             // add to faction TNT bank
             maxTnt += tntInChest;
-            factionPlayer.getFaction().setTnt(factionPlayer.getFaction().getTnt() + maxTnt);
+            factionPlayer.getFaction().setTNTBank(factionPlayer.getFaction().getTNTBank() + maxTnt);
         }
 
         // done!

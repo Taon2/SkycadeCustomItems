@@ -6,7 +6,7 @@
 
     <groupId>net.skycade</groupId>
     <artifactId>SkycadeCustomItems</artifactId>
-    <version>1.4.19-SNAPSHOT</version>
+    <version>1.4.20-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -121,9 +121,9 @@
         <dependency>
             <groupId>com.massivecraft</groupId>
             <artifactId>factions</artifactId>
-            <version>1.22.0</version>
+            <version>LATEST</version>
             <scope>system</scope>
-            <systemPath>${basedir}/dependencies/SkycadeFactions-1.22.0.jar</systemPath>
+            <systemPath>${basedir}/dependencies/Factions.jar</systemPath>
         </dependency>
         <!--Koth-->
         <dependency>
